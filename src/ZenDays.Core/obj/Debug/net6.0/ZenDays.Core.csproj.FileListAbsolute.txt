@@ -1,0 +1,12 @@
+C:\Users\Matheus\Source\ZenDays\src\ZenDays.Core\bin\Debug\net6.0\ZenDays.Core.deps.json
+C:\Users\Matheus\Source\ZenDays\src\ZenDays.Core\bin\Debug\net6.0\ZenDays.Core.dll
+C:\Users\Matheus\Source\ZenDays\src\ZenDays.Core\bin\Debug\net6.0\ZenDays.Core.pdb
+C:\Users\Matheus\Source\ZenDays\src\ZenDays.Core\obj\Debug\net6.0\ZenDays.Core.csproj.AssemblyReference.cache
+C:\Users\Matheus\Source\ZenDays\src\ZenDays.Core\obj\Debug\net6.0\ZenDays.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Matheus\Source\ZenDays\src\ZenDays.Core\obj\Debug\net6.0\ZenDays.Core.AssemblyInfoInputs.cache
+C:\Users\Matheus\Source\ZenDays\src\ZenDays.Core\obj\Debug\net6.0\ZenDays.Core.AssemblyInfo.cs
+C:\Users\Matheus\Source\ZenDays\src\ZenDays.Core\obj\Debug\net6.0\ZenDays.Core.csproj.CoreCompileInputs.cache
+C:\Users\Matheus\Source\ZenDays\src\ZenDays.Core\obj\Debug\net6.0\ZenDays.Core.dll
+C:\Users\Matheus\Source\ZenDays\src\ZenDays.Core\obj\Debug\net6.0\refint\ZenDays.Core.dll
+C:\Users\Matheus\Source\ZenDays\src\ZenDays.Core\obj\Debug\net6.0\ZenDays.Core.pdb
+C:\Users\Matheus\Source\ZenDays\src\ZenDays.Core\obj\Debug\net6.0\ref\ZenDays.Core.dll

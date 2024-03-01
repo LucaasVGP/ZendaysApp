@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "612355617030",
+    "project_id": "zendays-2ab10",
+    "storage_bucket": "zendays-2ab10.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:612355617030:android:18753c37263c456a3a6e87",
+        "android_client_info": {
+          "package_name": "com.example.zendays"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "612355617030-eh08fpdkkpcbeo71tmlha1mh1d0vs4d2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMADu7UPNx6RWCAqASHiqGAN2TnBd1zXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "612355617030-eh08fpdkkpcbeo71tmlha1mh1d0vs4d2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
