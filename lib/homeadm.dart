@@ -12,11 +12,9 @@ Future<String?> getToken() async {
 class HomeAdministradorPage extends StatefulWidget {
   @override
   _HomeAdministradorPageState createState() => _HomeAdministradorPageState();
-
 }
 
 class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
-
   final List<CardItem> cards = [
     CardItem(
       title: 'Relatório',
@@ -49,7 +47,8 @@ class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Administrador'),
+        title: Text('Home Administrador', style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xFF275657),
       ),
       drawer: AdminMenu(
         currentPage: currentPage,
@@ -59,6 +58,7 @@ class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
         crossAxisCount: 2,
         children: cards.map((card) => CardWidget(card: card)).toList(),
       ),
+      backgroundColor: Colors.grey[200], // Cor de fundo suave
     );
   }
 }
@@ -78,7 +78,10 @@ class CardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2.0,
+      elevation: 4.0, // Mais elevação para uma aparência mais tridimensional
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0), // Borda arredondada
+      ),
       child: InkWell(
         onTap: () {
           // Implementar ação para cada card
@@ -90,7 +93,7 @@ class CardWidget extends StatelessWidget {
               Icon(
                 card.icon,
                 size: 48.0,
-                color: Colors.blue,
+                color: Color(0xFF275657), // Cor personalizada para o ícone
               ),
               SizedBox(height: 8.0),
               Text(
@@ -98,7 +101,7 @@ class CardWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.black87,
                 ),
               ),
             ],

@@ -23,7 +23,7 @@ class AdminMenu extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Color(0xFF275657),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

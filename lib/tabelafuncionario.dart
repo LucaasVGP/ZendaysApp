@@ -90,8 +90,25 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
 
 
   Future<void> excluirFuncionario(dynamic funcionario) async {
-    // Implemente a lógica para excluir o funcionário na API
-    // ...
+    final getToken = await TokenManager.getToken();
+    final apiUrl = await TokenManager.getUrl();
+    final url = '$apiUrl/Usuario/Disable?id=${funcionario['id']}';
+
+    final headers = {
+      'Ngrok-Skip-Browser-Warning': 'true',
+      'Authorization': 'Bearer $getToken',
+    };
+
+    try {
+      await http.delete(Uri.parse(url), headers: headers);
+      setState(() {
+        funcionarios.removeWhere((f) => f['id'] == funcionario['id']);
+        funcionariosFiltrados = List.from(funcionarios);
+      });
+    } catch (e) {
+      // Tratar erros de conexão
+      print('Erro de conexão: $e');
+    }
   }
 
   Future<void> registrarFuncionario(dynamic funcionario) async {
@@ -107,19 +124,20 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
     };
 
     final requestBody = jsonEncode({
-      "Nome": funcionario['nome'], // Ajuste para o nome do campo conforme esperado pela API
+      "Nome": funcionario['nome'],
       "Cpf": funcionario['cpf'],
       "Endereco": funcionario['endereco'],
       "Salario": funcionario['salario'],
       "Telefone": funcionario['telefone'],
       "DataNascimento": funcionario['dataNascimento'],
-      "UltimasFerias": funcionario['ultimasFerias'],
+      "ultimasFerias": funcionario['ultimasFerias'], // Alteração aqui
       "Email": funcionario['email'],
       "Senha": funcionario['senha'],
       "IdDepartamento": funcionario['idDepartamento'],
       "Cargo": funcionario['cargo'],
       "TipoUsuario": funcionario['tipoUsuario'],
     });
+
 
     try {
       final response = await http.post(Uri.parse(url), headers: headers, body: requestBody);
@@ -160,6 +178,7 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
       print('Erro de conexão: $e');
     }
   }
+
 
   void exibirModalRegistro() {
     TextEditingController _registroNomeController = TextEditingController();
@@ -331,6 +350,7 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
   }
 
   void exibirModalEditar(dynamic funcionario) {
+    // Preencher os controladores com os dados do funcionário selecionado
     _editarNomeController.text = funcionario['nome'];
     _registroCpfController.text = funcionario['cpf'];
     _registroEnderecoController.text = funcionario['endereco'];
@@ -339,10 +359,9 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
     _registroDataNascimentoController.text = funcionario['dataNascimento'];
     _registroUltimasFeriasController.text = funcionario['ultimasFerias'];
     _registroEmailController.text = funcionario['email'];
-    _registroSenhaController.text = funcionario['senha'];
     _registroIdDepartamentoController.text = funcionario['idDepartamento'];
     _registroCargoController.text = funcionario['cargo'];
-    _registroTipoUsuarioController.text = funcionario['tipoUsuario'].toString();
+
 
     showDialog(
       context: context,
@@ -387,67 +406,98 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
                     controller: _registroEmailController,
                     decoration: InputDecoration(labelText: 'Email'),
                   ),
-                  TextFormField(
-                    controller: _registroSenhaController,
-                    decoration: InputDecoration(labelText: 'Senha'),
-                    obscureText: true,
-                  ),
-                  TextFormField(
-                    controller: _registroIdDepartamentoController,
-                    decoration: InputDecoration(labelText: 'ID do Departamento'),
+                  DropdownButtonFormField(
+                    value: _registroIdDepartamentoController.text.isNotEmpty
+                        ? _registroIdDepartamentoController.text
+                        : null,
+                    items: departamentosList.map((departamento) {
+                      return DropdownMenuItem(
+                        value: departamento['id'],
+                        child: Text(departamento['nome']),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _registroIdDepartamentoController.text = value.toString();
+                      });
+                    },
+                    decoration: InputDecoration(labelText: 'Departamento'),
                   ),
                   TextFormField(
                     controller: _registroCargoController,
                     decoration: InputDecoration(labelText: 'Cargo'),
-                  ),
-                  TextFormField(
-                    controller: _registroTipoUsuarioController,
-                    decoration: InputDecoration(labelText: 'Tipo de Usuário'),
-                    keyboardType: TextInputType.number,
                   ),
                 ],
               ),
             ),
           ),
           actions: [
-          TextButton(
-          onPressed: () {
-        Navigator.of(context).pop();
-      },
-    child: Text('Cancelar'),
-    ),
-    TextButton(
-    onPressed: () async {
-    final funcionarioAtualizado = {
-    'nome': _editarNomeController.text,
-    'cpf': _registroCpfController.text,
-    'endereco': _registroEnderecoController.text,
-    'salario': double.parse(_registroSalarioController.text),
-    'telefone': _registroTelefoneController.text,
-    'dataNascimento': _registroDataNascimentoController.text,
-    'ultimasFerias': _registroUltimasFeriasController.text,
-    'email': _registroEmailController.text,
-    'senha': _registroSenhaController.text,
-    'idDepartamento': _registroIdDepartamentoController.text,
-    'cargo': _registroCargoController.text,
-    'tipoUsuario': int.parse(_registroTipoUsuarioController.text),
-    };
-    await atualizarFuncionario(funcionarioAtualizado);
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                // Coletar os valores atualizados dos campos
+                final funcionarioAtualizado = {
+                  'id': funcionario['id'],
+                  'nome': _editarNomeController.text,
+                  'cpf': _registroCpfController.text,
+                  'endereco': _registroEnderecoController.text,
+                  'salario': double.parse(_registroSalarioController.text),
+                  'telefone': _registroTelefoneController.text,
+                  'dataNascimento': _registroDataNascimentoController.text,
+                  'ultimasFerias': _registroUltimasFeriasController.text,
+                  'email': _registroEmailController.text,
+                  'idDepartamento': _registroIdDepartamentoController.text,
+                  'cargo': _registroCargoController.text,
+                };
 
-    Navigator.of(context).pop();
-    },
-      child: Text('Atualizar'),
-    ),
+                // Adicione o console aqui para verificar o conteúdo de funcionarioAtualizado
+                print('Funcionário Atualizado: $funcionarioAtualizado');
+
+                // Enviar solicitação PUT para atualizar o funcionário
+                await atualizarFuncionario(funcionarioAtualizado);
+
+                // Fechar o diálogo de edição
+                Navigator.of(context).pop();
+              },
+              child: Text('Atualizar'),
+            ),
           ],
-      );
-        },
+        );
+      },
     );
   }
 
 
-        void exibirModalExclusao(dynamic funcionario) {
-    // Implemente o código para exibir o modal de exclusão
-    // ...
+  void exibirModalExclusao(dynamic funcionario) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmar Exclusão'),
+          content: Text('Deseja excluir o funcionário ${funcionario['nome']}?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                await excluirFuncionario(funcionario);
+                Navigator.of(context).pop();
+              },
+              child: Text('Excluir'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
 
