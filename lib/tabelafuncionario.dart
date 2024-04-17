@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:zendays/main.dart';
+import 'package:zendays/Funcoes/Utils.dart';
+import 'package:zendays/Configs/Appsettings.dart';
 
 class TabelaFuncionarioPage extends StatefulWidget {
   @override
@@ -39,11 +40,10 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
 
 
   Future<void> fetchData() async {
-    final getToken = await TokenManager.getToken();
-    final apiUrl = await TokenManager.getUrl();
+    final getToken = await Utils.returnInfo("token");
+    final apiUrl = Appsettings.api_url;
     final url = '$apiUrl/Usuario/GetAll';
-    final headers = {'Ngrok-Skip-Browser-Warning': 'true',  'Authorization': 'Bearer $getToken'};
-    print(headers);
+    final headers = {'Authorization': 'Bearer $getToken'};
 
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
@@ -65,10 +65,10 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
   }
 
   Future<void> fetchDepartamentos() async {
-    final getToken = await TokenManager.getToken();
-    final apiUrl = await TokenManager.getUrl();
+    final getToken = await Utils.returnInfo("token");
+    final apiUrl = Appsettings.api_url;
     final url = '$apiUrl/Departamento/GetAll';
-    final headers = {'Ngrok-Skip-Browser-Warning': 'true',  'Authorization': 'Bearer $getToken'};
+    final headers = {'Authorization': 'Bearer $getToken'};
 
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
@@ -90,12 +90,11 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
 
 
   Future<void> excluirFuncionario(dynamic funcionario) async {
-    final getToken = await TokenManager.getToken();
-    final apiUrl = await TokenManager.getUrl();
+    final getToken = await Utils.returnInfo("token");
+    final apiUrl = Appsettings.api_url;
     final url = '$apiUrl/Usuario/Disable?id=${funcionario['id']}';
 
     final headers = {
-      'Ngrok-Skip-Browser-Warning': 'true',
       'Authorization': 'Bearer $getToken',
     };
 
@@ -112,12 +111,11 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
   }
 
   Future<void> registrarFuncionario(dynamic funcionario) async {
-    final getToken = await TokenManager.getToken();
-    final apiUrl = await TokenManager.getUrl();
+    final getToken = await Utils.returnInfo("token");
+    final apiUrl = Appsettings.api_url;
     final url = '$apiUrl/Usuario/Register';
 
     final headers = {
-      'Ngrok-Skip-Browser-Warning': 'true',
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $getToken',
       'Accept': 'application/json',
@@ -158,12 +156,11 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
 
 
   Future<void> atualizarFuncionario(dynamic funcionario) async {
-    final getToken = await TokenManager.getToken();
-    final apiUrl = await TokenManager.getUrl();
+    final getToken = await Utils.returnInfo("token");
+    final apiUrl = Appsettings.api_url;
     final url = '$apiUrl/Usuario/Update';
 
     final headers = {
-      'Ngrok-Skip-Browser-Warning': 'true',
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $getToken',
     };
@@ -499,8 +496,6 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
       },
     );
   }
-
-
 
   Future<void> atualizarListaFuncionarios() async {
     // Implemente a lógica para atualizar a lista de funcionários

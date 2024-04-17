@@ -7,8 +7,7 @@ class BotoesCustom extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-          onPrimary: Colors.grey[300],
-          primary: Colors.redAccent,
+          foregroundColor: Colors.grey[300], backgroundColor: Colors.redAccent,
           minimumSize: Size(88, 36),
           padding: EdgeInsets.symmetric(horizontal: 16),
           shape: const RoundedRectangleBorder(

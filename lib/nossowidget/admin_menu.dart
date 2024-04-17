@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zendays/contatos.dart';
-import 'package:zendays/homeadm.dart';
-import 'package:zendays/login.dart';
+import 'package:zendays/Telasiniciais/homeadm.dart';
+import 'package:zendays/Telasiniciais/login.dart';
 import 'package:zendays/tabeladepartamento.dart';
 import 'package:zendays/tabelafuncionario.dart';
 import 'package:zendays/relatorioferiasadm.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zendays/login.dart';
+import 'package:zendays/Telasiniciais/login.dart';
 
 class SignupPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -73,7 +73,7 @@ class SignupPage extends StatelessWidget {
                   // Implemente a lógica de registro aqui
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.blue,
+                  backgroundColor: Colors.blue,
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                 ),
                 child: Text(

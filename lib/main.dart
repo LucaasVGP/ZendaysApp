@@ -1,30 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:zendays/homeadm.dart';
-import 'package:zendays/login.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-class TokenManager {
-  static Future<String?> getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
-    return token;
-  }
-
-  static Future<String?> getUrl() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? url = prefs.getString('api_url');
-    return url;
-  }
-
-  static Future<void> salvarURL() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('api_url', 'https://zendays.azurewebsites.net/api/v1');
-  }
-}
+import 'package:zendays/Telasiniciais/homeadm.dart';
+import 'package:zendays/Telasiniciais/login.dart';
 
 void main() {
-  TokenManager.salvarURL();
-
   runApp(MyApp());
 }
 

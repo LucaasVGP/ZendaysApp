@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:zendays/main.dart';
+import 'package:zendays/Funcoes/Utils.dart';
+import 'package:zendays/Configs/Appsettings.dart';
 
 class TabelaDepartamentosPage extends StatefulWidget {
   @override
@@ -22,10 +23,10 @@ class _TabelaDepartamentosPageState extends State<TabelaDepartamentosPage> {
   }
 
   Future<void> fetchData() async {
-    final getToken = await TokenManager.getToken();
-    final apiUrl = await TokenManager.getUrl();
+    final getToken = await Utils.returnInfo("token");
+    final apiUrl = Appsettings.api_url;
     final url = '$apiUrl/Departamento/GetAll';
-    final headers = {'Ngrok-Skip-Browser-Warning': 'true',  'Authorization': 'Bearer $getToken'};
+    final headers = {'Authorization': 'Bearer $getToken'};
     print(headers);
 
     try {
@@ -101,11 +102,11 @@ class _TabelaDepartamentosPageState extends State<TabelaDepartamentosPage> {
 
   Future<void> atualizarDepartamento(dynamic departamento) async {
 
-    final getToken = await TokenManager.getToken();
-    final apiUrl = await TokenManager.getUrl();
+    final getToken = await Utils.returnInfo("token");
+    final apiUrl = Appsettings.api_url;
     final url = '$apiUrl/Departamento/Update';
 
-    final headers = {'Ngrok-Skip-Browser-Warning': 'true', 'Content-Type': 'application/json', 'Authorization': 'Bearer $getToken'};
+    final headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer $getToken'};
 
     final requestBody = jsonEncode({
       'id': departamento['id'],
@@ -149,12 +150,12 @@ class _TabelaDepartamentosPageState extends State<TabelaDepartamentosPage> {
 
   Future<void> excluirDepartamento(dynamic departamento) async {
 
-    final getToken = await TokenManager.getToken();
-    final apiUrl = await TokenManager.getUrl();
+    final getToken = await Utils.returnInfo("token");
+    final apiUrl = Appsettings.api_url;
     final url = '$apiUrl/Departamento/Disable?id=${departamento['id']}';
 
     print(departamento['id']);
-    final headers = {'Ngrok-Skip-Browser-Warning': 'true',  'Authorization': 'Bearer $getToken'};
+    final headers = {'Authorization': 'Bearer $getToken'};
 
     try {
       await http.delete(Uri.parse(url), headers: headers);
@@ -212,11 +213,11 @@ class _TabelaDepartamentosPageState extends State<TabelaDepartamentosPage> {
 
   Future<void> registrarDepartamento(dynamic departamento) async {
 
-    final getToken = await TokenManager.getToken();
-    final apiUrl = await TokenManager.getUrl();
+    final getToken = await Utils.returnInfo("token");
+    final apiUrl = Appsettings.api_url;
     final url = '$apiUrl/Departamento/Register';
 
-    final headers = {'Ngrok-Skip-Browser-Warning': 'true', 'Content-Type': 'application/json', 'Authorization': 'Bearer $getToken'};
+    final headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer $getToken'};
 
     final requestBody = jsonEncode(departamento);
     print(jsonEncode(departamento));
