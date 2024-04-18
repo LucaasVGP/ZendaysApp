@@ -6,8 +6,8 @@ import 'package:zendays/Configs/Appsettings.dart';
 import 'package:zendays/Funcoes/Utils.dart';
 
 class LoginPage extends StatelessWidget {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController(text: "admin@admin.com");
+  final TextEditingController _passwordController = TextEditingController(text: "123456");
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +79,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Future<String?> _login(String email, String senha) async {
+  Future<bool> _login(String email, String senha) async {
     final apiUrl = Appsettings.api_url;
     final url = '$apiUrl/Auth/Login';
     final Map<String, String> headers = {
@@ -92,20 +92,10 @@ class LoginPage extends StatelessWidget {
     );
 
     if (response.statusCode == 200) {
-      final jsonResponse = jsonDecode(response.body);
-      final token = jsonResponse['data']['token'];
-      final tipo = jsonResponse['data']['tipoUsuario'];
-      final id = jsonResponse['data']['id'];
-      final email = jsonResponse['data']['email'];
-      final departamento = jsonResponse['data']['idDepartamento'];
-      await Utils.saveInfo("token",token);
-      await Utils.saveInfo("id",id);
-      await Utils.saveInfo("tipo",tipo);
-      await Utils.saveInfo("email",email);
-      await Utils.saveInfo("departamento",departamento);
-      return token;
+      _saveInfoToken(response.body);
+      return true ;
     } else {
-      return null;
+      return false;
     }
   }
 
@@ -113,10 +103,39 @@ class LoginPage extends StatelessWidget {
     final email = _usernameController.text;
     final senha = _passwordController.text;
     final token = await _login(email, senha);
-    if (token != null) {
-      Navigator.pushNamed(context, '/home_user');
+    if (token == true) {
+      final tipo = await Utils.returnInfo("tipo");
+      switch (tipo) {
+        case '0':
+          //colaborador
+          Navigator.pushNamed(context, '/home_adm');
+          break;
+        case '1':
+          //Supervisor
+          Navigator.pushNamed(context, '/home_adm');
+          break;
+        case '2':
+          Navigator.pushNamed(context, '/home_adm');
+          break;
+        default:
+          Fluttertoast.showToast(msg: 'Falha no login. Verifique o tipo de usuario');
+      }
     } else {
       Fluttertoast.showToast(msg: 'Falha no login. Verifique suas credenciais.');
     }
+  }
+
+  Future<void> _saveInfoToken(String resultToken) async {
+    final jsonResponse = jsonDecode(resultToken);
+    final token = jsonResponse['data']['token'];
+    final tipo = jsonResponse['data']['tipoUsuario'];
+    final id = jsonResponse['data']['id'];
+    final email = jsonResponse['data']['email'];
+    final departamento = jsonResponse['data']['idDepartamento'];
+    await Utils.saveInfo("token",token);
+    await Utils.saveInfo("id",id);
+    await Utils.saveInfo("tipo",tipo);
+    await Utils.saveInfo("email",email);
+    await Utils.saveInfo("departamento",departamento);
   }
 }

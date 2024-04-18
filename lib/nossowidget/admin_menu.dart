@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:zendays/contatos.dart';
+import 'package:zendays/Contatos/contatos.dart';
 import 'package:zendays/Telasiniciais/homeadm.dart';
 import 'package:zendays/Telasiniciais/login.dart';
-import 'package:zendays/tabeladepartamento.dart';
-import 'package:zendays/tabelafuncionario.dart';
-import 'package:zendays/relatorioferiasadm.dart';
-import 'package:zendays/relatoriocustoadm.dart';
+import 'package:zendays/Departamentos/tabeladepartamento.dart';
+import 'package:zendays/Funcionarios/tabelafuncionario.dart';
+import 'package:zendays/Relatorios/relatorioferiasadm.dart';
+import 'package:zendays/Relatorios/relatoriocustoadm.dart';
 
 class AdminMenu extends StatelessWidget {
   final String currentPage;

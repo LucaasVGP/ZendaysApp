@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:zendays/aprovacoesferias.dart';
+import 'package:zendays/Ferias/aprovacoesferias.dart';
 import 'package:zendays/Telasiniciais/login.dart';
-import 'package:zendays/tabelaferias.dart';
-import 'package:zendays/dadospessoais.dart';
+import 'package:zendays/Ferias/tabelaferias.dart';
+import 'package:zendays/Funcionarios/dadospessoais.dart';
 
 class UserMenu extends StatelessWidget {
   final String currentPage;
