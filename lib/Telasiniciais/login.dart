@@ -1,9 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:zendays/Configs/Appsettings.dart';
-import 'package:zendays/Funcoes/Utils.dart';
+import '../Configs/Rotas.dart';
+import '../Configs/EHttpMethod.dart';
+import '../Funcoes/Utils.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController(text: "admin@admin.com");
@@ -23,11 +22,13 @@ class LoginPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              SizedBox(height: 50),
-              Image.network(
+    /*SizedBox(height: 50),
+                Image.network(
                 'https://cdn.discordapp.com/attachments/1009260536992632953/1221586075387170877/ZENDAYS-removebg-preview.png?ex=66131db0&is=6600a8b0&hm=d7b82e1e1753c70a734e6efd90fb1181ab4e6da287d83c28a6119a1b1e6b5faf&',
                 height: 200,
               ),
+
+     */
               SizedBox(height: 30),
               TextFormField(
                 controller: _usernameController,
@@ -79,32 +80,12 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Future<bool> _login(String email, String senha) async {
-    final apiUrl = Appsettings.api_url;
-    final url = '$apiUrl/Auth/Login';
-    final Map<String, String> headers = {
-      'Content-Type': 'application/json',
-    };
-    final response = await http.post(
-      Uri.parse(url),
-      headers: headers,
-      body: jsonEncode({'email': email, 'senha': senha}),
-    );
-
-    if (response.statusCode == 200) {
-      _saveInfoToken(response.body);
-      return true ;
-    } else {
-      return false;
-    }
-  }
-
   Future<void> _performLogin(BuildContext context) async {
-    final email = _usernameController.text;
-    final senha = _passwordController.text;
-    final token = await _login(email, senha);
-    if (token == true) {
-      final tipo = await Utils.returnInfo("tipo");
+    var obj = {'email': _usernameController.text, 'senha': _passwordController.text};
+    var resultado = await Utils.GetRetornoAPI(obj,HttpMethod.POST,Rotas.login,false);
+    if (resultado.Sucesso) {
+      _saveInfoToken(resultado.Obj);
+      final tipo = resultado.Obj['tipoUsuario'];
       switch (tipo) {
         case '0':
           //colaborador
@@ -125,13 +106,12 @@ class LoginPage extends StatelessWidget {
     }
   }
 
-  Future<void> _saveInfoToken(String resultToken) async {
-    final jsonResponse = jsonDecode(resultToken);
-    final token = jsonResponse['data']['token'];
-    final tipo = jsonResponse['data']['tipoUsuario'];
-    final id = jsonResponse['data']['id'];
-    final email = jsonResponse['data']['email'];
-    final departamento = jsonResponse['data']['idDepartamento'];
+  Future<void> _saveInfoToken(Map<String, dynamic> json) async {
+    final token = json['token'];
+    final tipo = json['tipoUsuario'];
+    final id = json['id'];
+    final email = json['email'];
+    final departamento = json['idDepartamento'];
     await Utils.saveInfo("token",token);
     await Utils.saveInfo("id",id);
     await Utils.saveInfo("tipo",tipo);
