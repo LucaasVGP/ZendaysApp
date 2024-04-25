@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zendays/Configs/EHttpMethod.dart';
-import 'package:zendays/Funcoes/Utils.dart';
+import 'package:zendays/Configs/Utils.dart';
 
 class TabelaDepartamentosPage extends StatefulWidget {
   @override

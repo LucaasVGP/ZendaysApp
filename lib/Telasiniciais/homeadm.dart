@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zendays/nossowidget/admin_menu.dart';
+import 'package:zendays/Telasiniciais/admin_menu.dart';
 
 class HomeAdministradorPage extends StatefulWidget {
   @override
@@ -39,7 +39,7 @@ class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Administrador', style: TextStyle(color: Colors.white)),
+        title: Text('Administrador', style: TextStyle(color: Colors.white)),
         backgroundColor: Color(0xFF275657),
       ),
       drawer: AdminMenu(

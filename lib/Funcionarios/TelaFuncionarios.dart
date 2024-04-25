@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:zendays/Funcoes/Utils.dart';
+import 'package:zendays/Configs/EHttpMethod.dart';
+import 'package:zendays/Configs/Utils.dart';
 import 'package:zendays/Configs/Appsettings.dart';
 
 class TabelaFuncionarioPage extends StatefulWidget {
@@ -18,7 +19,6 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
   final TextEditingController _editarNomeController = TextEditingController();
 
   // Controladores no início da classe
-  final TextEditingController _registroNomeController = TextEditingController();
   final TextEditingController _registroCpfController = TextEditingController();
   final TextEditingController _registroEnderecoController = TextEditingController();
   final TextEditingController _registroSalarioController = TextEditingController();
@@ -26,11 +26,8 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
   final TextEditingController _registroDataNascimentoController = TextEditingController();
   final TextEditingController _registroUltimasFeriasController = TextEditingController();
   final TextEditingController _registroEmailController = TextEditingController();
-  final TextEditingController _registroSenhaController = TextEditingController();
   final TextEditingController _registroIdDepartamentoController = TextEditingController();
   final TextEditingController _registroCargoController = TextEditingController();
-  final TextEditingController _registroTipoUsuarioController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -40,88 +37,63 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
 
 
   Future<void> fetchData() async {
-    final getToken = await Utils.returnInfo("token");
-    final apiUrl = Appsettings.api_url;
-    final url = '$apiUrl/Usuario/GetAll';
-    final headers = {'Authorization': 'Bearer $getToken'};
-
     try {
-      final response = await http.get(Uri.parse(url), headers: headers);
-
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
+      var url = "/Usuario/GetAll";
+      var tipoUsuario = await Utils.returnInfo("tipo");
+      if(tipoUsuario != "2"){
+        var departamento = await Utils.returnInfo("departamento");
+        url = "/Usuario/GetAllFiltros?departamentoId=${departamento}";
+      }
+      var response = await Utils.GetRetornoAPI(null, HttpMethod.GET, url, true);
+      if (response.Sucesso) {
         setState(() {
-          funcionarios = jsonResponse['data'];
+          funcionarios = Utils.ConvertResponseToMapList(response.Obj);
           funcionariosFiltrados = List.from(funcionarios);
         });
       } else {
-        // Tratar erros de resposta da API
-        print('Erro na requisição: ${response.statusCode}');
+        var erro = response.Mensagem;
+        Utils.showToast("$erro");
       }
     } catch (e) {
-      // Tratar erros de conexão
-      print('Erro de conexão: $e');
+      Utils.showToast("$e");
     }
   }
 
   Future<void> fetchDepartamentos() async {
-    final getToken = await Utils.returnInfo("token");
-    final apiUrl = Appsettings.api_url;
-    final url = '$apiUrl/Departamento/GetAll';
-    final headers = {'Authorization': 'Bearer $getToken'};
-
     try {
-      final response = await http.get(Uri.parse(url), headers: headers);
-
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
+      var response = await Utils.GetRetornoAPI(null, HttpMethod.GET, "/Departamento/GetAll", true);
+      if (response.Sucesso) {
         setState(() {
-          departamentosList = jsonResponse['data'];
+          departamentosList = Utils.ConvertResponseToMapList(response.Obj);
         });
       } else {
-        // Tratar erros de resposta da API
-        print('Erro na requisição de departamentos: ${response.statusCode}');
+        var erro = response.Mensagem;
+        Utils.showToast("$erro");
       }
     } catch (e) {
-      // Tratar erros de conexão
-      print('Erro de conexão ao buscar departamentos: $e');
+      Utils.showToast("$e");
     }
   }
 
 
   Future<void> excluirFuncionario(dynamic funcionario) async {
-    final getToken = await Utils.returnInfo("token");
-    final apiUrl = Appsettings.api_url;
-    final url = '$apiUrl/Usuario/Disable?id=${funcionario['id']}';
-
-    final headers = {
-      'Authorization': 'Bearer $getToken',
-    };
-
     try {
-      await http.delete(Uri.parse(url), headers: headers);
-      setState(() {
-        funcionarios.removeWhere((f) => f['id'] == funcionario['id']);
-        funcionariosFiltrados = List.from(funcionarios);
-      });
+      var response = await Utils.GetRetornoAPI(null, HttpMethod.DELETE,"/Usuario/Disable?id=${funcionario['id']}", true);
+      if(response.Sucesso){
+        fetchData();
+      }
+      else{
+        var erro = response.Mensagem;
+        Utils.showToast("$erro");
+      }
     } catch (e) {
-      // Tratar erros de conexão
-      print('Erro de conexão: $e');
+      Utils.showToast("$e");
     }
   }
 
   Future<void> registrarFuncionario(dynamic funcionario) async {
-    final getToken = await Utils.returnInfo("token");
-    final apiUrl = Appsettings.api_url;
-    final url = '$apiUrl/Usuario/Register';
-
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $getToken',
-      'Accept': 'application/json',
-    };
-
-    final requestBody = jsonEncode({
+    var tipoUsuario = await Utils.returnInfo("tipo");
+    final requestBody = {
       "Nome": funcionario['nome'],
       "Cpf": funcionario['cpf'],
       "Endereco": funcionario['endereco'],
@@ -133,49 +105,135 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
       "Senha": funcionario['senha'],
       "IdDepartamento": funcionario['idDepartamento'],
       "Cargo": funcionario['cargo'],
-      "TipoUsuario": funcionario['tipoUsuario'],
-    });
-
-
-    try {
-      final response = await http.post(Uri.parse(url), headers: headers, body: requestBody);
-
-      if (response.statusCode == 200) {
-        print('Funcionário registrado com sucesso!');
-        await atualizarListaFuncionarios();
-      } else {
-        // Tratar erros de resposta da API
-        print('Erro na requisição: ${response.statusCode}');
-        print('Resposta da API: ${response.body}');
-      }
-    } catch (e) {
-      // Tratar erros de conexão
-      print('Erro de conexão: $e');
-    }
-  }
-
-
-  Future<void> atualizarFuncionario(dynamic funcionario) async {
-    final getToken = await Utils.returnInfo("token");
-    final apiUrl = Appsettings.api_url;
-    final url = '$apiUrl/Usuario/Update';
-
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $getToken',
+      "TipoUsuario": tipoUsuario == "2" ? "1" : "0"
     };
 
-    final requestBody = jsonEncode(funcionario);
 
     try {
-      await http.put(Uri.parse(url), headers: headers, body: requestBody);
-      await atualizarListaFuncionarios();
+      var response = await Utils.GetRetornoAPI(requestBody, HttpMethod.POST, "/Usuario/Register", true);
+      if (response.Sucesso) {
+        fetchData();
+      } else {
+        var erro = response.Mensagem;
+       Utils.showToast("$erro");
+      }
     } catch (e) {
-      // Tratar erros de conexão
-      print('Erro de conexão: $e');
+      Utils.showToast("$e");
     }
   }
 
+  Future<void> atualizarFuncionario(dynamic funcionario) async {
+    try {
+      var response = await Utils.GetRetornoAPI(funcionario, HttpMethod.PUT,"/Usuario/Update",true);
+     if(response.Sucesso){
+       fetchData();
+     }
+     else{
+       var erro = response.Mensagem;
+       Utils.showToast("$erro");
+     }
+    } catch (e) {
+     Utils.showToast("$e");
+    }
+  }
+
+  void filtrarFuncionarios(String query) {
+    setState(() {
+      funcionariosFiltrados = funcionarios.where((funcionario) {
+        final nome = funcionario['nome'].toString().toLowerCase();
+        return nome.contains(query.toLowerCase());
+      }).toList();
+    });
+  }
+
+  //Widgets
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Tabela de Funcionários'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          exibirModalRegistro();
+        },
+        child: Icon(Icons.add),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: TextField(
+              controller: _searchController,
+              onChanged: filtrarFuncionarios,
+              decoration: InputDecoration(
+                labelText: 'Pesquisar Funcionário',
+                prefixIcon: Icon(Icons.search),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: funcionariosFiltrados.length,
+              itemBuilder: (context, index) {
+                final funcionario = funcionariosFiltrados[index];
+                return ListTile(
+                  title: Text(funcionario['nome']),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          setState(() {
+                            funcionarioSelecionado = funcionario;
+                          });
+                          exibirModalEditar(funcionario);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          exibirModalExclusao(funcionario);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void exibirModalExclusao(dynamic funcionario) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmar Exclusão'),
+          content: Text('Deseja excluir o funcionário ${funcionario['nome']}?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                await excluirFuncionario(funcionario);
+                Navigator.of(context).pop();
+              },
+              child: Text('Excluir'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void exibirModalRegistro() {
     TextEditingController _registroNomeController = TextEditingController();
@@ -189,7 +247,6 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
     TextEditingController _registroSenhaController = TextEditingController();
     TextEditingController _registroIdDepartamentoController = TextEditingController();
     TextEditingController _registroCargoController = TextEditingController();
-    TextEditingController _registroTipoUsuarioController = TextEditingController();
 
     showDialog(
       context: context,
@@ -261,29 +318,7 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
                   TextFormField(
                     controller: _registroCargoController,
                     decoration: InputDecoration(labelText: 'Cargo'),
-                  ),
-                  DropdownButtonFormField(
-                    value: _registroTipoUsuarioController.text.isNotEmpty
-                        ? _registroTipoUsuarioController.text
-                        : null,
-                    items: [
-                      DropdownMenuItem(
-                        value: '0',
-                        child: Text('Comum'),
-                      ),
-                      DropdownMenuItem(
-                        value: '1',
-                        child: Text('Adm'),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        _registroTipoUsuarioController.text = value.toString();
-                      });
-                    },
-                    decoration: InputDecoration(labelText: 'Tipo de Usuário'),
-                  ),
-
+                  )
                 ],
               ),
             ),
@@ -308,7 +343,6 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
                 final novoSenha = _registroSenhaController.text;
                 final novoIdDepartamento = _registroIdDepartamentoController.text;
                 final novoCargo = _registroCargoController.text;
-                final novoTipoUsuario = int.parse(_registroTipoUsuarioController.text);
 
                 final funcionario = {
                   'nome': novoNome,
@@ -321,8 +355,7 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
                   'email': novoEmail,
                   'senha': novoSenha,
                   'idDepartamento': novoIdDepartamento,
-                  'cargo': novoCargo,
-                  'tipoUsuario': novoTipoUsuario,
+                  'cargo': novoCargo
                 };
 
                 await registrarFuncionario(funcionario);
@@ -335,15 +368,6 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
         );
       },
     );
-  }
-
-  void filtrarFuncionarios(String query) {
-    setState(() {
-      funcionariosFiltrados = funcionarios.where((funcionario) {
-        final nome = funcionario['nome'].toString().toLowerCase();
-        return nome.contains(query.toLowerCase());
-      }).toList();
-    });
   }
 
   void exibirModalEditar(dynamic funcionario) {
@@ -452,10 +476,6 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
                   'cargo': _registroCargoController.text,
                 };
 
-                // Adicione o console aqui para verificar o conteúdo de funcionarioAtualizado
-                print('Funcionário Atualizado: $funcionarioAtualizado');
-
-                // Enviar solicitação PUT para atualizar o funcionário
                 await atualizarFuncionario(funcionarioAtualizado);
 
                 // Fechar o diálogo de edição
@@ -469,104 +489,4 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
     );
   }
 
-
-  void exibirModalExclusao(dynamic funcionario) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Confirmar Exclusão'),
-          content: Text('Deseja excluir o funcionário ${funcionario['nome']}?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () async {
-                await excluirFuncionario(funcionario);
-                Navigator.of(context).pop();
-              },
-              child: Text('Excluir'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> atualizarListaFuncionarios() async {
-    // Implemente a lógica para atualizar a lista de funcionários
-    // Pode envolver chamar a função de busca novamente
-    // ...
-
-    setState(() {
-      // Atualize a lista de funcionários
-      // funcionarios = ...
-      // funcionariosFiltrados = ...
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Tabela de Funcionários'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          exibirModalRegistro();
-        },
-        child: Icon(Icons.add),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              onChanged: filtrarFuncionarios,
-              decoration: InputDecoration(
-                labelText: 'Pesquisar Funcionário',
-                prefixIcon: Icon(Icons.search),
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: funcionariosFiltrados.length,
-              itemBuilder: (context, index) {
-                final funcionario = funcionariosFiltrados[index];
-                return ListTile(
-                  title: Text(funcionario['nome']),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit),
-                        onPressed: () {
-                          setState(() {
-                            funcionarioSelecionado = funcionario;
-                          });
-                          exibirModalEditar(funcionario);
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () {
-                          exibirModalExclusao(funcionario);
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

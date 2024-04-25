@@ -3,7 +3,7 @@ import 'package:zendays/Contatos/contatos.dart';
 import 'package:zendays/Telasiniciais/homeadm.dart';
 import 'package:zendays/Telasiniciais/login.dart';
 import 'package:zendays/Departamentos/TelaDepartamentos.dart';
-import 'package:zendays/Funcionarios/tabelafuncionario.dart';
+import 'package:zendays/Funcionarios/TelaFuncionarios.dart';
 import 'package:zendays/Relatorios/relatorioferiasadm.dart';
 import 'package:zendays/Relatorios/relatoriocustoadm.dart';
 

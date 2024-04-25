@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../Configs/Rotas.dart';
 import '../Configs/EHttpMethod.dart';
-import '../Funcoes/Utils.dart';
+import '../Configs/Utils.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController(text: "admin@admin.com");

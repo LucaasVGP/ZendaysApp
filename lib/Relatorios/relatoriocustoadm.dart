@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zendays/nossowidget/admin_menu.dart';
+import 'package:zendays/Telasiniciais/admin_menu.dart';
 
 class RelatorioCustoAdmPage extends StatefulWidget {
   @override
