@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import '../Configs/Rotas.dart';
 import '../Configs/EHttpMethod.dart';
 import '../Funcoes/Utils.dart';
@@ -99,10 +98,11 @@ class LoginPage extends StatelessWidget {
           Navigator.pushNamed(context, '/home_adm');
           break;
         default:
-          Fluttertoast.showToast(msg: 'Falha no login. Verifique o tipo de usuario');
+          Utils.showToast('Falha no login. Verifique o tipo de usuario');
       }
-    } else {
-      Fluttertoast.showToast(msg: 'Falha no login. Verifique suas credenciais.');
+    }
+    else{
+      Utils.showToast('Falha no login. Verifique as credenciais');
     }
   }
 

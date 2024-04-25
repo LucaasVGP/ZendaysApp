@@ -1,3 +1,4 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zendays/Configs/EHttpMethod.dart';
 import 'package:zendays/Configs/Appsettings.dart';
@@ -46,7 +47,7 @@ class Utils {
       if(response.statusCode != 500)
       {
         Map<String, dynamic> data = json.decode(response.body);
-        return new ReturnAPI(true,data['message'],data['data']);
+        return new ReturnAPI(data['success'],data['message'],data['data']);
       }else{
         return new ReturnAPI(false, "Erro externo",null);
       }
@@ -56,4 +57,24 @@ class Utils {
     }
   }
 
+  static List<Map<String, dynamic>> ConvertResponseToMapList(dynamic responseObject) {
+    List<Map<String, dynamic>> objList = [];
+    if (responseObject != null && responseObject is List) {
+      for (dynamic department in responseObject) {
+        if (department is Map<String, dynamic>) {
+          objList.add(department);
+        }
+      }
+    }
+    return objList;
+  }
+
+  static void showToast(String message,[int? tempo]) {
+    var tempoToast = 5;
+    if(tempo != null) tempoToast = tempo;
+    Fluttertoast.showToast(
+      msg: message,
+      timeInSecForIosWeb: tempoToast,
+    );
+  }
 }

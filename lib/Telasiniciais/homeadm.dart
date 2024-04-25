@@ -1,13 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zendays/nossowidget/admin_menu.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-Future<String?> getToken() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? token = prefs.getString('token');
-  print(token);
-  return token;
-}
 
 class HomeAdministradorPage extends StatefulWidget {
   @override
