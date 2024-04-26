@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zendays/Configs/EHttpMethod.dart';
 import 'package:zendays/Configs/Utils.dart';
+import 'package:zendays/Telasiniciais/admin_menu.dart';
 
 class TabelaDepartamentosPage extends StatefulWidget {
   @override
@@ -91,7 +92,12 @@ class _TabelaDepartamentosPageState extends State<TabelaDepartamentosPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Departamentos'),
+        title: Text('Departamentos', style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xFF275657),
+      ),
+      drawer: AdminMenu(
+        currentPage: 'Departamentos',
+        onMenuTap: (String page) {},
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

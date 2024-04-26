@@ -4,8 +4,7 @@ import 'package:zendays/Telasiniciais/homeadm.dart';
 import 'package:zendays/Telasiniciais/login.dart';
 import 'package:zendays/Departamentos/TelaDepartamentos.dart';
 import 'package:zendays/Funcionarios/TelaFuncionarios.dart';
-import 'package:zendays/Relatorios/relatorioferiasadm.dart';
-import 'package:zendays/Relatorios/relatoriocustoadm.dart';
+import 'package:zendays/Configs/Utils.dart';
 
 class AdminMenu extends StatelessWidget {
   final String currentPage;
@@ -16,129 +15,105 @@ class AdminMenu extends StatelessWidget {
     required this.onMenuTap,
   });
 
+
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Color(0xFF275657),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return FutureBuilder<String?>(
+      future: Utils.returnInfo('tipo'),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Exibir algum indicador de carregamento enquanto a função está sendo executada.
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          // Tratar possíveis erros que podem ocorrer durante a execução da função.
+          return Text('Erro: ${snapshot.error}');
+        } else {
+          String? tipo = snapshot.data;
+          return Drawer(
+            child: ListView(
               children: [
-                Icon(
-                  Icons.account_circle,
-                  size: 64.0,
-                  color: Colors.white,
-                ),
-                SizedBox(height: 8.0),
-                Text(
-                  'Administrador',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Color(0xFF275657),
                   ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 8.0),
+                      Text(
+                        'Menu',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                ListTile(
+                  leading: Icon(Icons.home),
+                  title: Text('Tela Inicial'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeAdministradorPage()),
+                    );
+                  },
+                  selected: currentPage == 'telainicial',
+                ),
+                tipo == "1" || tipo == "2"?ListTile(
+                  leading: Icon(Icons.group),
+                  title: Text('Funcionários'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => TabelaFuncionarioPage()),
+                    );
+                  },
+                  selected: currentPage == 'funcionarios',
+                ):Container(),
+                tipo == "2"?ListTile(
+                  leading: Icon(Icons.paste),
+                  title: Text('Departamentos'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => TabelaDepartamentosPage()),
+                    );
+                  },
+                  selected: currentPage == 'departamentos',
+                ):Container(),
+
+
+                ListTile(
+                  leading: Icon(Icons.contacts),
+                  title: Text('Contatos'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => ContatosPage()),
+                    );
+                  },
+                  selected: currentPage == 'contatos',
+                ),
+                ListTile(
+                  leading: Icon(Icons.exit_to_app),
+                  title: Text('Sair'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
+                  },
                 ),
               ],
             ),
-          ),
-          ListTile(
-            leading: Icon(Icons.home),
-            title: Text('Home'),
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => HomeAdministradorPage()),
-              );
-            },
-            selected: currentPage == 'home',
-          ),
-          ExpansionTile(
-            leading: Icon(Icons.table_chart),
-            title: Text('Tabelas'),
-            children: [
-              ListTile(
-                title: Text('Funcionários'),
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => TabelaFuncionarioPage()),
-                  );
-                },
-                selected: currentPage == 'funcionarios',
-              ),
-              ListTile(
-                title: Text('Departamentos'),
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => TabelaDepartamentosPage()),
-                  );
-                },
-                selected: currentPage == 'departamentos',
-              ),
-              ListTile(
-                title: Text('Férias'),
-                onTap: () {
-                  onMenuTap('ferias');
-                },
-                selected: currentPage == 'ferias',
-              ),
-            ],
-          ),
-          ExpansionTile(
-            leading: Icon(Icons.insert_chart),
-            title: Text('Relatórios'),
-            children: [
-              ListTile(
-                title: Text('Relatório de Férias'),
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => RelatorioFeriasAdmPage()),
-                  );
-                },
-                selected: currentPage == 'relatorioferias',
-              ),
-              ListTile(
-                title: Text('Relatório de Custos'),
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => RelatorioCustoAdmPage()),
-                  );
-                },
-                selected: currentPage == 'relatoriocustos',
-              ),
-            ],
-          ),
-          ListTile(
-            leading: Icon(Icons.contacts),
-            title: Text('Contatos'),
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => ContatosPage()),
-              );
-            },
-            selected: currentPage == 'contatos',
-          ),
-          ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('Sair'),
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
-              );
-            },
-          ),
-        ],
-      ),
+          );
+        }
+      },
     );
   }
 }

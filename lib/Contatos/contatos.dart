@@ -7,13 +7,12 @@ class ContatosPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contatos'),
+        title: Text('Contatos', style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xFF275657),
       ),
-      drawer: AdminMenu( // Adicione o menu de administração no drawer
-        currentPage: 'contatos',
+      drawer: AdminMenu(
+        currentPage: 'Contatos',
         onMenuTap: (String page) {
-          // Lógica para tratar o clique nos itens do menu
-          // Implemente conforme necessário
         },
       ),
       body: SingleChildScrollView(

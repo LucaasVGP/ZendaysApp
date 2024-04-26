@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:zendays/Configs/EHttpMethod.dart';
 import 'package:zendays/Configs/Utils.dart';
-import 'package:zendays/Configs/Appsettings.dart';
+import 'package:zendays/Telasiniciais/admin_menu.dart';
 
 class TabelaFuncionarioPage extends StatefulWidget {
   @override
@@ -151,7 +149,12 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tabela de Funcionários'),
+        title: Text('Funcionarios', style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xFF275657),
+      ),
+      drawer: AdminMenu(
+        currentPage: 'Funcionarios',
+        onMenuTap: (String page) {},
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

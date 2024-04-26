@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:zendays/Funcionarios/TelaFuncionarios.dart';
 import 'package:zendays/Telasiniciais/admin_menu.dart';
+import 'package:zendays/Telasiniciais/login.dart';
+
+import '../Contatos/contatos.dart';
 
 class HomeAdministradorPage extends StatefulWidget {
   @override
@@ -7,22 +11,25 @@ class HomeAdministradorPage extends StatefulWidget {
 }
 
 class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
+  //definir quis itens entram na lista baseado no tipo de usuario
   final List<CardItem> cards = [
-    CardItem(
+    /*CardItem(
       title: 'Relatório',
       icon: Icons.bar_chart,
-    ),
-    CardItem(
+    ),*/
+    /*CardItem(
       title: 'Férias',
       icon: Icons.beach_access,
-    ),
+    ),*/
     CardItem(
       title: 'Funcionário',
       icon: Icons.people,
+      pagina: TabelaFuncionarioPage()
     ),
     CardItem(
       title: 'Login',
       icon: Icons.login,
+      pagina: LoginPage()
     ),
   ];
 
@@ -39,7 +46,7 @@ class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Administrador', style: TextStyle(color: Colors.white)),
+        title: Text('Tela Inicial', style: TextStyle(color: Colors.white)),
         backgroundColor: Color(0xFF275657),
       ),
       drawer: AdminMenu(
@@ -58,8 +65,9 @@ class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
 class CardItem {
   final String title;
   final IconData icon;
+  final Widget pagina;
 
-  CardItem({required this.title, required this.icon});
+  CardItem({required this.title, required this.icon,required this.pagina});
 }
 
 class CardWidget extends StatelessWidget {
@@ -76,7 +84,10 @@ class CardWidget extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
-          // Implementar ação para cada card
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => card.pagina),
+          );
         },
         child: Center(
           child: Column(
