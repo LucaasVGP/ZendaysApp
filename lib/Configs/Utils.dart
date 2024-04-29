@@ -5,6 +5,7 @@ import 'package:zendays/Configs/Appsettings.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:zendays/Configs/ReturnAPI.dart';
+import 'package:zendays/Configs/TokenInfo.dart';
 
 class Utils {
   static Future<void> saveInfo(String info,String value) async {
@@ -16,6 +17,29 @@ class Utils {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString(info);
     return token;
+  }
+
+  static Future<TokenInfo> returnAllInfoToken() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? tipo = prefs.getString("tipo");
+    String? email = prefs.getString("email");
+
+    var tipoUsuario = "";
+
+    switch (tipo) {
+      case '0':
+      //colaborador
+        tipoUsuario = "Colaborador";
+        break;
+      case '1':
+        tipoUsuario = "Supervisor";
+        break;
+      case '2':
+        tipoUsuario = "Administrador";
+        break;
+    }
+
+    return new TokenInfo(TipoUsuarioExibicao: tipoUsuario, Email: email!,TipoUsuario:tipo!);
   }
 
   static Future<ReturnAPI> GetRetornoAPI(dynamic obj,HttpMethod method,String url,bool autenticado) async{

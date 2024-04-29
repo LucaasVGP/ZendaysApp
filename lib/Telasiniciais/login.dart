@@ -13,6 +13,7 @@ class LoginPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(''),
         centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -84,22 +85,7 @@ class LoginPage extends StatelessWidget {
     var resultado = await Utils.GetRetornoAPI(obj,HttpMethod.POST,Rotas.login,false);
     if (resultado.Sucesso) {
       _saveInfoToken(resultado.Obj);
-      final tipo = resultado.Obj['tipoUsuario'];
-      switch (tipo) {
-        case '0':
-          //colaborador
-          Navigator.pushNamed(context, '/home_adm');
-          break;
-        case '1':
-          //Supervisor
-          Navigator.pushNamed(context, '/home_adm');
-          break;
-        case '2':
-          Navigator.pushNamed(context, '/home_adm');
-          break;
-        default:
-          Utils.showToast('Falha no login. Verifique o tipo de usuario');
-      }
+      Navigator.pushNamed(context, '/home_adm');
     }
     else{
       Utils.showToast('Falha no login. Verifique as credenciais');

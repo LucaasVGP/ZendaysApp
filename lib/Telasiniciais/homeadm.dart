@@ -3,8 +3,6 @@ import 'package:zendays/Funcionarios/TelaFuncionarios.dart';
 import 'package:zendays/Telasiniciais/admin_menu.dart';
 import 'package:zendays/Telasiniciais/login.dart';
 
-import '../Contatos/contatos.dart';
-
 class HomeAdministradorPage extends StatefulWidget {
   @override
   _HomeAdministradorPageState createState() => _HomeAdministradorPageState();
@@ -27,7 +25,7 @@ class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
       pagina: TabelaFuncionarioPage()
     ),
     CardItem(
-      title: 'Login',
+      title: 'Sair',
       icon: Icons.login,
       pagina: LoginPage()
     ),

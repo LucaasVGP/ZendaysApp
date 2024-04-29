@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zendays/Configs/TokenInfo.dart';
 import 'package:zendays/Contatos/contatos.dart';
 import 'package:zendays/Telasiniciais/homeadm.dart';
 import 'package:zendays/Telasiniciais/login.dart';
@@ -18,8 +19,8 @@ class AdminMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String?>(
-      future: Utils.returnInfo('tipo'),
+    return FutureBuilder<TokenInfo>(
+      future: Utils.returnAllInfoToken(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Exibir algum indicador de carregamento enquanto a função está sendo executada.
@@ -28,7 +29,9 @@ class AdminMenu extends StatelessWidget {
           // Tratar possíveis erros que podem ocorrer durante a execução da função.
           return Text('Erro: ${snapshot.error}');
         } else {
-          String? tipo = snapshot.data;
+          String? tipo = snapshot.data?.TipoUsuario;
+          String? tipoUsuario = snapshot.data?.TipoUsuarioExibicao;
+          String? email = snapshot.data?.Email;
           return Drawer(
             child: ListView(
               children: [
@@ -47,6 +50,22 @@ class AdminMenu extends StatelessWidget {
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        '$tipoUsuario',
+                        style: TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orangeAccent,
+                        ),
+                      ),
+                      Text(
+                        '$email',
+                        style: TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepOrangeAccent,
                         ),
                       ),
                     ],
