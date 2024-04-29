@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zendays/Configs/TokenInfo.dart';
 import 'package:zendays/Contatos/contatos.dart';
+import 'package:zendays/Ferias/aprovacoesferias.dart';
+import 'package:zendays/Ferias/tabelaferias.dart';
 import 'package:zendays/Telasiniciais/homeadm.dart';
 import 'package:zendays/Telasiniciais/login.dart';
 import 'package:zendays/Departamentos/TelaDepartamentos.dart';
@@ -106,6 +108,29 @@ class AdminMenu extends StatelessWidget {
                   selected: currentPage == 'departamentos',
                 ):Container(),
 
+                tipo == "0" || tipo == "1"?ListTile(
+                  leading: Icon(Icons.list),
+                  title: Text('Minhas Férias'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => TabelaFeriasPage()),
+                    );
+                  },
+                  selected: currentPage == 'minhasFerias',
+                ):Container(),
+
+                tipo == "1" || tipo == "2"?ListTile(
+                  leading: Icon(Icons.beach_access),
+                  title: Text('Gerenciar Férias'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => AprovacaoFeriasPage()),
+                    );
+                  },
+                  selected: currentPage == 'gerenciarFerias',
+                ):Container(),
 
                 ListTile(
                   leading: Icon(Icons.contacts),

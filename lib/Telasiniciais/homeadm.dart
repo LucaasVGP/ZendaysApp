@@ -38,6 +38,11 @@ class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
           switch (tipoUsuario) {
             case '0':
             //MinhasFerias
+              cards.add(CardItem(
+                  title: 'Minhas Férias',
+                  icon: Icons.beach_access,
+                  pagina: TabelaFuncionarioPage()
+              ));
               break;
             case '1':
               cards.add(CardItem(
@@ -46,6 +51,11 @@ class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
                   pagina: TabelaFuncionarioPage()
               ));
               //MinhasFerias
+              cards.add(CardItem(
+                  title: 'Minhas Férias',
+                  icon: Icons.beach_access,
+                  pagina: TabelaFuncionarioPage()
+              ));
               //GerenciarFerias
               break;
             case '2':

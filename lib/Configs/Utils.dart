@@ -23,7 +23,6 @@ class Utils {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? tipo = prefs.getString("tipo");
     String? email = prefs.getString("email");
-
     var tipoUsuario = "";
 
     switch (tipo) {
