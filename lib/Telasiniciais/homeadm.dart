@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:zendays/Departamentos/TelaDepartamentos.dart';
 import 'package:zendays/Funcionarios/TelaFuncionarios.dart';
 import 'package:zendays/Telasiniciais/admin_menu.dart';
 import 'package:zendays/Telasiniciais/login.dart';
+import '../Configs/Utils.dart';
 
 class HomeAdministradorPage extends StatefulWidget {
   @override
@@ -9,26 +11,8 @@ class HomeAdministradorPage extends StatefulWidget {
 }
 
 class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
-  //definir quis itens entram na lista baseado no tipo de usuario
   final List<CardItem> cards = [
-    /*CardItem(
-      title: 'Relatório',
-      icon: Icons.bar_chart,
-    ),*/
-    /*CardItem(
-      title: 'Férias',
-      icon: Icons.beach_access,
-    ),*/
-    CardItem(
-      title: 'Funcionário',
-      icon: Icons.people,
-      pagina: TabelaFuncionarioPage()
-    ),
-    CardItem(
-      title: 'Sair',
-      icon: Icons.login,
-      pagina: LoginPage()
-    ),
+
   ];
 
   String currentPage = 'home';
@@ -37,27 +21,74 @@ class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
     setState(() {
       currentPage = page;
     });
-    // Adicione aqui qualquer lógica adicional que precisa ser executada quando um item do menu é selecionado
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Tela Inicial', style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF275657),
-      ),
-      drawer: AdminMenu(
-        currentPage: currentPage,
-        onMenuTap: handleMenuTap,
-      ),
-      body: GridView.count(
-        crossAxisCount: 2,
-        children: cards.map((card) => CardWidget(card: card)).toList(),
-      ),
-      backgroundColor: Colors.grey[200], // Cor de fundo suave
+    return FutureBuilder<String?>(
+      future: Utils.returnInfo("tipo"),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Erro ao obter o tipo de usuário: ${snapshot.error}');
+        } else {
+          String? tipoUsuario = snapshot.data;
+          List<CardItem> cards = [];
+          switch (tipoUsuario) {
+            case '0':
+            //MinhasFerias
+              break;
+            case '1':
+              cards.add(CardItem(
+                  title: 'Funcionário',
+                  icon: Icons.people,
+                  pagina: TabelaFuncionarioPage()
+              ));
+              //MinhasFerias
+              //GerenciarFerias
+              break;
+            case '2':
+              cards.add(CardItem(
+                  title: 'Funcionário',
+                  icon: Icons.people,
+                  pagina: TabelaFuncionarioPage()
+              ));
+              cards.add(CardItem(
+                  title: 'Departamento',
+                  icon: Icons.people,
+                  pagina: TabelaDepartamentosPage()
+              ));
+              //Gerenciar Ferias
+              break;
+          }
+          cards.add(CardItem(
+              title: 'Sair',
+              icon: Icons.login,
+              pagina: LoginPage()
+          ));
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Tela Inicial', style: TextStyle(color: Colors.white)),
+              backgroundColor: Color(0xFF275657),
+            ),
+            drawer: AdminMenu(
+              currentPage: currentPage,
+              onMenuTap: handleMenuTap,
+            ),
+            body: GridView.count(
+              crossAxisCount: 2,
+              children: cards.map((card) => CardWidget(card: card)).toList(),
+            ),
+            backgroundColor: Colors.grey[200], // Cor de fundo suave
+          );
+        }
+      },
     );
   }
+
+
 }
 
 class CardItem {

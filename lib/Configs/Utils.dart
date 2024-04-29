@@ -28,8 +28,7 @@ class Utils {
 
     switch (tipo) {
       case '0':
-      //colaborador
-        tipoUsuario = "Colaborador";
+        tipoUsuario = "Funcionario";
         break;
       case '1':
         tipoUsuario = "Supervisor";
