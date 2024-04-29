@@ -17,12 +17,12 @@ import 'package:shared_preferences/shared_preferences.dart';
   }
 }
 
-class DataListPage extends StatefulWidget {
+class TabelaFeriasPage extends StatefulWidget {
 @override
-_DataListPageState createState() => _DataListPageState();
+_TabelaFeriasPageState createState() => _TabelaFeriasPageState();
 }
 
-class _DataListPageState extends State<DataListPage> {
+class _TabelaFeriasPageState extends State<TabelaFeriasPage> {
 List<Data> dataList = [];
 
 @override
