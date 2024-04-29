@@ -75,17 +75,25 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
 
 
   Future<void> excluirFuncionario(dynamic funcionario) async {
-    try {
-      var response = await Utils.GetRetornoAPI(null, HttpMethod.DELETE,"/Usuario/Delete?id=${funcionario['id']}", true);
-      if(response.Sucesso){
-        fetchData();
+    var usuarioLogado =  await Utils.returnInfo("id");
+    if(usuarioLogado == funcionario['id']) {
+      Utils.showToast("ação Invalida");
+    }
+    else {
+      try {
+        var response = await Utils.GetRetornoAPI(
+            null, HttpMethod.DELETE, "/Usuario/Delete?id=${funcionario['id']}",
+            true);
+        if (response.Sucesso) {
+          fetchData();
+        }
+        else {
+          var erro = response.Mensagem;
+          Utils.showToast("$erro");
+        }
+      } catch (e) {
+        Utils.showToast("$e");
       }
-      else{
-        var erro = response.Mensagem;
-        Utils.showToast("$erro");
-      }
-    } catch (e) {
-      Utils.showToast("$e");
     }
   }
 
