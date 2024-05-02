@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zendays/Departamentos/TelaDepartamentos.dart';
+import 'package:zendays/Ferias/TelaFerias.dart';
 import 'package:zendays/Funcionarios/TelaFuncionarios.dart';
 import 'package:zendays/Telasiniciais/admin_menu.dart';
 import 'package:zendays/Telasiniciais/login.dart';
@@ -41,7 +42,7 @@ class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
               cards.add(CardItem(
                   title: 'Minhas Férias',
                   icon: Icons.beach_access,
-                  pagina: TabelaFuncionarioPage()
+                  pagina: TelaFeriasPage()
               ));
               break;
             case '1':
@@ -54,7 +55,7 @@ class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
               cards.add(CardItem(
                   title: 'Minhas Férias',
                   icon: Icons.beach_access,
-                  pagina: TabelaFuncionarioPage()
+                  pagina: TelaFeriasPage()
               ));
               //GerenciarFerias
               break;
