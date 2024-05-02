@@ -65,6 +65,9 @@ class Utils {
         case HttpMethod.DELETE:
           response = await http.delete(Uri.parse(urlCompleta), headers: headers);
           break;
+        case HttpMethod.PATCH:
+          response = await http.patch(Uri.parse(urlCompleta), headers: headers);
+          break;
       }
       if(response.statusCode != 500)
       {

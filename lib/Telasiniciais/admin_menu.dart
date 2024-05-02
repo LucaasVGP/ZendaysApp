@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zendays/Configs/TokenInfo.dart';
 import 'package:zendays/Contatos/contatos.dart';
+import 'package:zendays/Ferias/Visualizarferias.dart';
 import 'package:zendays/Ferias/aprovacoesferias.dart';
 import 'package:zendays/Telasiniciais/homeadm.dart';
 import 'package:zendays/Telasiniciais/login.dart';
@@ -131,6 +132,18 @@ class AdminMenu extends StatelessWidget {
                     );
                   },
                   selected: currentPage == 'gerenciarFerias',
+                ):Container(),
+
+                tipo == "1" || tipo == "2"?ListTile(
+                  leading: Icon(Icons.beach_access),
+                  title: Text('Visualizar Férias'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => VisualizarFeriasPage()),
+                    );
+                  },
+                  selected: currentPage == 'visualizarFerias',
                 ):Container(),
 
                 ListTile(

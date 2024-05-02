@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zendays/Departamentos/TelaDepartamentos.dart';
 import 'package:zendays/Ferias/TelaFerias.dart';
+import 'package:zendays/Ferias/Visualizarferias.dart';
+import 'package:zendays/Ferias/aprovacoesferias.dart';
 import 'package:zendays/Funcionarios/TelaFuncionarios.dart';
 import 'package:zendays/Telasiniciais/admin_menu.dart';
 import 'package:zendays/Telasiniciais/login.dart';
@@ -57,7 +59,16 @@ class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
                   icon: Icons.beach_access,
                   pagina: TelaFeriasPage()
               ));
-              //GerenciarFerias
+              cards.add(CardItem(
+                  title: 'Gerenciar Ferias',
+                  icon: Icons.ac_unit_sharp,
+                  pagina: AprovacaoFeriasPage()
+              ));
+              cards.add(CardItem(
+                  title: 'Visualizar Ferias',
+                  icon: Icons.ac_unit_sharp,
+                  pagina: VisualizarFeriasPage()
+              ));
               break;
             case '2':
               cards.add(CardItem(
@@ -70,7 +81,16 @@ class _HomeAdministradorPageState extends State<HomeAdministradorPage> {
                   icon: Icons.people,
                   pagina: TabelaDepartamentosPage()
               ));
-              //Gerenciar Ferias
+              cards.add(CardItem(
+                  title: 'Gerenciar Ferias',
+                  icon: Icons.ac_unit_sharp,
+                  pagina: AprovacaoFeriasPage()
+              ));
+              cards.add(CardItem(
+                  title: 'Visualizar Ferias',
+                  icon: Icons.ac_unit_sharp,
+                  pagina: VisualizarFeriasPage()
+              ));
               break;
           }
           cards.add(CardItem(
