@@ -27,11 +27,13 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
   }
 
 
-  Future<void> fetchData() async {
+  Future<void> fetchData({String status = "3"}) async {
     try {
 
       var idUsuario = await Utils.returnInfo("id");
       var url = "/Ferias/usuario?userId=$idUsuario";
+
+      if(status != "3") url+="&status=$status";
       var response = await Utils.GetRetornoAPI(null, HttpMethod.GET, url, true);
       if (response.Sucesso) {
         setState(() {
@@ -104,16 +106,6 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
      Utils.showToast("$e");
     }
   }
-
-  /*void filtrarferias(String query) {
-    setState(() {
-      feriasFiltrados = ferias.where((Ferias) {
-        final nome = Ferias['nome'].toString().toLowerCase();
-        return nome.contains(query.toLowerCase());
-      }).toList();
-    });
-  }*/
-
   //Widgets
   @override
   Widget build(BuildContext context) {
@@ -137,10 +129,8 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
           Padding(
             padding: EdgeInsets.all(16.0),
             child: DropdownButtonFormField(
-              value: _searchController.text.isNotEmpty
-                  ? _searchController.text
-                  : null,
-              items: <String>['0', '1', '2'] //validar tipo vazio para não filtrar
+              value: "3",
+              items: <String>['0', '1', '2','3']
               .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
               value: value,
@@ -150,7 +140,10 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
               onChanged: (value) {
                 setState(() {
                   _searchController.text = value.toString();
+                  feriasFiltrados = [];
                 });
+
+                fetchData(status: value.toString());
               },
               decoration: InputDecoration(labelText: 'Status Ferias'),
             ),
@@ -201,6 +194,8 @@ String getDropdownText(String value) {
       return 'Aprovado';
     case '2':
       return 'Rejeitado';
+    case '3':
+      return 'Todos';
     default:
       return '';
   }
