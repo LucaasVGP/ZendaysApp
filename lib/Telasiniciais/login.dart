@@ -4,7 +4,7 @@ import '../Configs/EHttpMethod.dart';
 import '../Configs/Utils.dart';
 
 class LoginPage extends StatelessWidget {
-  final TextEditingController _usernameController = TextEditingController(text: "admin@admin.com");
+  final TextEditingController _usernameController = TextEditingController(text: "lucass@email.com");
   final TextEditingController _passwordController = TextEditingController(text: "123456");
 
   @override

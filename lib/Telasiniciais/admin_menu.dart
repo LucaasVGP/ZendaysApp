@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:zendays/Configs/TokenInfo.dart';
 import 'package:zendays/Contatos/contatos.dart';
+import 'package:zendays/Ferias/Visualizarferias.dart';
 import 'package:zendays/Ferias/aprovacoesferias.dart';
-import 'package:zendays/Ferias/tabelaferias.dart';
 import 'package:zendays/Telasiniciais/homeadm.dart';
 import 'package:zendays/Telasiniciais/login.dart';
 import 'package:zendays/Departamentos/TelaDepartamentos.dart';
 import 'package:zendays/Funcionarios/TelaFuncionarios.dart';
 import 'package:zendays/Configs/Utils.dart';
+
+import '../Ferias/TelaFerias.dart';
 
 class AdminMenu extends StatelessWidget {
   final String currentPage;
@@ -114,7 +116,7 @@ class AdminMenu extends StatelessWidget {
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => TabelaFeriasPage()),
+                      MaterialPageRoute(builder: (context) => TelaFeriasPage()),
                     );
                   },
                   selected: currentPage == 'minhasFerias',
@@ -130,6 +132,18 @@ class AdminMenu extends StatelessWidget {
                     );
                   },
                   selected: currentPage == 'gerenciarFerias',
+                ):Container(),
+
+                tipo == "1" || tipo == "2"?ListTile(
+                  leading: Icon(Icons.beach_access),
+                  title: Text('Visualizar Férias'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => VisualizarFeriasPage()),
+                    );
+                  },
+                  selected: currentPage == 'visualizarFerias',
                 ):Container(),
 
                 ListTile(

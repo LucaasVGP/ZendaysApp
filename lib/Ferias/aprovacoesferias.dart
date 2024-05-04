@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:zendays/Configs/Utils.dart';
+import 'package:zendays/Configs/EHttpMethod.dart';
+
+import '../Telasiniciais/admin_menu.dart';
 
 class AprovacaoFeriasPage extends StatefulWidget {
   @override
@@ -6,54 +10,94 @@ class AprovacaoFeriasPage extends StatefulWidget {
 }
 
 class _AprovacaoFeriasPageState extends State<AprovacaoFeriasPage> {
-  final List<SolicitacaoFerias> solicitacoes = [
-    SolicitacaoFerias(
-      dataInicio: DateTime(2023, 1, 1),
-      dataFim: DateTime(2023, 1, 15),
-      dataPedido: DateTime(2023, 1, 1),
-      funcionario: 'João Silva',
-      diasParaVender: 5,
-      validado: false,
-    ),
-    SolicitacaoFerias(
-      dataInicio: DateTime(2023, 2, 1),
-      dataFim: DateTime(2023, 2, 15),
-      dataPedido: DateTime(2023, 2, 1),
-      funcionario: 'Maria Souza',
-      diasParaVender: 3,
-      validado: true,
-    ),
-    SolicitacaoFerias(
-      dataInicio: DateTime(2023, 3, 1),
-      dataFim: DateTime(2023, 3, 15),
-      dataPedido: DateTime(2023, 3, 1),
-      funcionario: 'Carlos Ferreira',
-      diasParaVender: 10,
-      validado: false,
-    ),
-  ];
+
+  List<dynamic> ferias = [];
+
+
+  Future<void> fetchData() async {
+    try {
+      var url = "/Ferias";
+      var tipoUsuario = await Utils.returnInfo("tipo");
+      switch(tipoUsuario){
+        case "1":
+          var departamentoId = await Utils.returnInfo("departamento");
+          var usuarioId = await Utils.returnInfo("id");
+          url += "?idDepartamento=$departamentoId&idUsuarioExcluir=$usuarioId&tipoUsuarioExcluir=1";
+          break;
+        case "2":
+          url += "?tipoUsuario=1";
+          break;
+      }
+
+
+      url+="&status=0";
+      var response = await Utils.GetRetornoAPI(null, HttpMethod.GET, url, true);
+      if (response.Sucesso) {
+        setState(() {
+          ferias = Utils.ConvertResponseToMapList(response.Obj);
+        });
+      } else {
+        var erro = response.Mensagem;
+        Utils.showToast("$erro");
+      }
+    } catch (e) {
+      Utils.showToast("$e");
+    }
+  }
+
+  Future<void> UpdateFerias(String IdFerias,String status) async{
+    try {
+    var url = "/Ferias/Status?id=$IdFerias&status=$status";
+    var response = await Utils.GetRetornoAPI(null, HttpMethod.PATCH, url, true);
+    if (response.Sucesso) {
+      setState(() {
+        ferias = [];
+      });
+     fetchData();
+    } else {
+      var erro = response.Mensagem;
+      Utils.showToast("$erro");
+    }
+    } catch (e) {
+      Utils.showToast("$e");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Aprovação de Férias'),
+        title: Text('Aprovacão de férias', style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xFF275657),
+      ),
+      drawer: AdminMenu(
+        currentPage: 'ferias',
+        onMenuTap: (String page) {},
       ),
       body: ListView.separated(
-        itemCount: solicitacoes.length,
+        itemCount: ferias.length,
         separatorBuilder: (context, index) => Divider(height: 1.0),
         itemBuilder: (context, index) {
+          final feriasAtual = ferias[index];
+          var IdFerias = feriasAtual['id'];
+          var nomeUsuario = feriasAtual['nomeUsuario'];
+          var nomeDepartamento = feriasAtual['nomeDepartamento'];
           return Card(
             child: ListTile(
-              title: Text(solicitacoes[index].funcionario),
+              title: Text("$nomeUsuario - $nomeDepartamento"),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Data Início: ${solicitacoes[index].dataInicio.toString()}'),
-                  Text('Data Fim: ${solicitacoes[index].dataFim.toString()}'),
-                  Text('Data Pedido: ${solicitacoes[index].dataPedido.toString()}'),
-                  Text('Vendido: ${solicitacoes[index].diasParaVender} dias'),
-                  Text('Validado: ${solicitacoes[index].validado ? 'Sim' : 'Não'}'),
+                  Text('Data Início: ${feriasAtual['dataInicio']}'),
+                  Text('Data Fim: ${feriasAtual['dataFim']}'),
+                  Text('Data Pedido: ${feriasAtual['dataPedido']}'),
+                  Text('Vendido: ${feriasAtual['diasVendidos']} dias'),
                 ],
               ),
               trailing: Row(
@@ -82,7 +126,7 @@ class _AprovacaoFeriasPageState extends State<AprovacaoFeriasPage> {
                               TextButton(
                                 onPressed: () {
                                   Navigator.pop(context);
-                                  // Lógica para aprovar a solicitação
+                                  UpdateFerias(IdFerias, "1");
                                 },
                                 child: Text('Aprovar'),
                               ),
@@ -123,7 +167,7 @@ class _AprovacaoFeriasPageState extends State<AprovacaoFeriasPage> {
                               TextButton(
                                 onPressed: () {
                                   Navigator.pop(context);
-                                  // Lógica para recusar a solicitação
+                                  UpdateFerias(IdFerias, "2");
                                 },
                                 child: Text('Recusar'),
                               ),
@@ -148,22 +192,4 @@ class _AprovacaoFeriasPageState extends State<AprovacaoFeriasPage> {
       ),
     );
   }
-}
-
-class SolicitacaoFerias {
-  final DateTime dataInicio;
-  final DateTime dataFim;
-  final DateTime dataPedido;
-  final String funcionario;
-  final int diasParaVender;
-  final bool validado;
-
-  SolicitacaoFerias({
-    required this.dataInicio,
-    required this.dataFim,
-    required this.dataPedido,
-    required this.funcionario,
-    required this.diasParaVender,
-    required this.validado,
-  });
 }

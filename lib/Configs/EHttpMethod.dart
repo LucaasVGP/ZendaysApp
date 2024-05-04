@@ -2,5 +2,6 @@ enum HttpMethod {
 POST,
 GET,
 PUT,
-DELETE
+DELETE,
+PATCH
 }
