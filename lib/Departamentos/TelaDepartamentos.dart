@@ -48,9 +48,7 @@ class _TabelaDepartamentosPageState extends State<TabelaDepartamentosPage> {
       'nome': departamento['nome'],
     };
     try {
-      var response = await Utils.GetRetornoAPI(requestBody, HttpMethod.PUT, "/Departamento/Update'", true);
-      var mensagem = response.Mensagem;
-      Utils.showToast("$mensagem");
+      await Utils.GetRetornoAPI(requestBody, HttpMethod.PUT, "/Departamento/Update", true);
     } catch (e) {
       Utils.showToast("$e");
     }
@@ -58,7 +56,7 @@ class _TabelaDepartamentosPageState extends State<TabelaDepartamentosPage> {
 
   Future<void> excluirDepartamento(dynamic departamento) async {
     try {
-      var response = await Utils.GetRetornoAPI(null, HttpMethod.DELETE, "/Departamento/Disable?id=${departamento['id']}", true);
+      var response = await Utils.GetRetornoAPI(null, HttpMethod.DELETE, "/Departamento/Delete?id=${departamento['id']}", true);
       if(response.Sucesso) {
         fetchData();
       }

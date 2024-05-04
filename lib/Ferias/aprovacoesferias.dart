@@ -16,15 +16,16 @@ class _AprovacaoFeriasPageState extends State<AprovacaoFeriasPage> {
 
   Future<void> fetchData() async {
     try {
-      var url = "/Ferias/";
+      var url = "/Ferias";
       var tipoUsuario = await Utils.returnInfo("tipo");
       switch(tipoUsuario){
         case "1":
           var departamentoId = await Utils.returnInfo("departamento");
-          url += "departamento?idDepartamento=$departamentoId";
+          var usuarioId = await Utils.returnInfo("id");
+          url += "?idDepartamento=$departamentoId&idUsuarioExcluir=$usuarioId&tipoUsuarioExcluir=1";
           break;
         case "2":
-          url += "tipoUsuario?tipoUsuario=1";
+          url += "?tipoUsuario=1";
           break;
       }
 
@@ -84,12 +85,12 @@ class _AprovacaoFeriasPageState extends State<AprovacaoFeriasPage> {
         separatorBuilder: (context, index) => Divider(height: 1.0),
         itemBuilder: (context, index) {
           final feriasAtual = ferias[index];
-          var dataInicio = feriasAtual['dataInicio'];
-          var dataFim = feriasAtual['dataFim'];
           var IdFerias = feriasAtual['id'];
+          var nomeUsuario = feriasAtual['nomeUsuario'];
+          var nomeDepartamento = feriasAtual['nomeDepartamento'];
           return Card(
             child: ListTile(
-              title: Text("$dataInicio - $dataFim"),
+              title: Text("$nomeUsuario - $nomeDepartamento"),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

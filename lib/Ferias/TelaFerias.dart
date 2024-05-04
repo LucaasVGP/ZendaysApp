@@ -31,7 +31,7 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
     try {
 
       var idUsuario = await Utils.returnInfo("id");
-      var url = "/Ferias/usuario?userId=$idUsuario";
+      var url = "/Ferias?userId=$idUsuario";
 
       if(status != "3") url+="&status=$status";
       var response = await Utils.GetRetornoAPI(null, HttpMethod.GET, url, true);
@@ -109,9 +109,12 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
   //Widgets
   @override
   Widget build(BuildContext context) {
+
+
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('ferias', style: TextStyle(color: Colors.white)),
+        title: Text('Minhas Ferias', style: TextStyle(color: Colors.white)),
         backgroundColor: Color(0xFF275657),
       ),
       drawer: AdminMenu(
