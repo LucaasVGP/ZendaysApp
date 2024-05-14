@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:zendays/Configs/EHttpMethod.dart';
 import 'package:zendays/Configs/Utils.dart';
 import 'package:zendays/Telasiniciais/admin_menu.dart';
@@ -18,14 +19,23 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
 
   // Controladores no início da classe
   final TextEditingController _registroCpfController = TextEditingController();
-  final TextEditingController _registroEnderecoController = TextEditingController();
-  final TextEditingController _registroSalarioController = TextEditingController();
-  final TextEditingController _registroTelefoneController = TextEditingController();
-  final TextEditingController _registroDataNascimentoController = TextEditingController();
-  final TextEditingController _registroUltimasFeriasController = TextEditingController();
-  final TextEditingController _registroEmailController = TextEditingController();
-  final TextEditingController _registroIdDepartamentoController = TextEditingController();
-  final TextEditingController _registroCargoController = TextEditingController();
+  final TextEditingController _registroEnderecoController =
+      TextEditingController();
+  final TextEditingController _registroSalarioController =
+      TextEditingController();
+  final TextEditingController _registroTelefoneController =
+      TextEditingController();
+  final TextEditingController _registroDataNascimentoController =
+      TextEditingController();
+  final TextEditingController _registroUltimasFeriasController =
+      TextEditingController();
+  final TextEditingController _registroEmailController =
+      TextEditingController();
+  final TextEditingController _registroIdDepartamentoController =
+      TextEditingController();
+  final TextEditingController _registroCargoController =
+      TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -33,12 +43,11 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
     fetchDepartamentos();
   }
 
-
   Future<void> fetchData() async {
     try {
       var url = "/Usuario/GetAll";
       var tipoUsuario = await Utils.returnInfo("tipo");
-      if(tipoUsuario != "2"){
+      if (tipoUsuario != "2") {
         var departamento = await Utils.returnInfo("departamento");
         url = "/Usuario/GetAllFiltros?departamentoId=${departamento}";
       }
@@ -59,7 +68,8 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
 
   Future<void> fetchDepartamentos() async {
     try {
-      var response = await Utils.GetRetornoAPI(null, HttpMethod.GET, "/Departamento/GetAll", true);
+      var response = await Utils.GetRetornoAPI(
+          null, HttpMethod.GET, "/Departamento/GetAll", true);
       if (response.Sucesso) {
         setState(() {
           departamentosList = Utils.ConvertResponseToMapList(response.Obj);
@@ -73,21 +83,17 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
     }
   }
 
-
   Future<void> excluirFuncionario(dynamic funcionario) async {
-    var usuarioLogado =  await Utils.returnInfo("id");
-    if(usuarioLogado == funcionario['id']) {
+    var usuarioLogado = await Utils.returnInfo("id");
+    if (usuarioLogado == funcionario['id']) {
       Utils.showToast("ação Invalida");
-    }
-    else {
+    } else {
       try {
-        var response = await Utils.GetRetornoAPI(
-            null, HttpMethod.DELETE, "/Usuario/Delete?id=${funcionario['id']}",
-            true);
+        var response = await Utils.GetRetornoAPI(null, HttpMethod.DELETE,
+            "/Usuario/Delete?id=${funcionario['id']}", true);
         if (response.Sucesso) {
           fetchData();
-        }
-        else {
+        } else {
           var erro = response.Mensagem;
           Utils.showToast("$erro");
         }
@@ -114,14 +120,14 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
       "TipoUsuario": tipoUsuario == "2" ? "1" : "0"
     };
 
-
     try {
-      var response = await Utils.GetRetornoAPI(requestBody, HttpMethod.POST, "/Usuario/Register", true);
+      var response = await Utils.GetRetornoAPI(
+          requestBody, HttpMethod.POST, "/Usuario/Register", true);
       if (response.Sucesso) {
         fetchData();
       } else {
         var erro = response.Mensagem;
-       Utils.showToast("$erro");
+        Utils.showToast("$erro");
       }
     } catch (e) {
       Utils.showToast("$e");
@@ -130,16 +136,16 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
 
   Future<void> atualizarFuncionario(dynamic funcionario) async {
     try {
-      var response = await Utils.GetRetornoAPI(funcionario, HttpMethod.PUT,"/Usuario/Update",true);
-     if(response.Sucesso){
-       fetchData();
-     }
-     else{
-       var erro = response.Mensagem;
-       Utils.showToast("$erro");
-     }
+      var response = await Utils.GetRetornoAPI(
+          funcionario, HttpMethod.PUT, "/Usuario/Update", true);
+      if (response.Sucesso) {
+        fetchData();
+      } else {
+        var erro = response.Mensagem;
+        Utils.showToast("$erro");
+      }
     } catch (e) {
-     Utils.showToast("$e");
+      Utils.showToast("$e");
     }
   }
 
@@ -252,11 +258,14 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
     TextEditingController _registroEnderecoController = TextEditingController();
     TextEditingController _registroSalarioController = TextEditingController();
     TextEditingController _registroTelefoneController = TextEditingController();
-    TextEditingController _registroDataNascimentoController = TextEditingController();
-    TextEditingController _registroUltimasFeriasController = TextEditingController();
+    TextEditingController _registroDataNascimentoController =
+        TextEditingController();
+    TextEditingController _registroUltimasFeriasController =
+        TextEditingController();
     TextEditingController _registroEmailController = TextEditingController();
     TextEditingController _registroSenhaController = TextEditingController();
-    TextEditingController _registroIdDepartamentoController = TextEditingController();
+    TextEditingController _registroIdDepartamentoController =
+        TextEditingController();
     TextEditingController _registroCargoController = TextEditingController();
 
     showDialog(
@@ -271,7 +280,8 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
                 children: [
                   TextFormField(
                     controller: _registroNomeController,
-                    decoration: InputDecoration(labelText: 'Nome do Funcionário'),
+                    decoration:
+                        InputDecoration(labelText: 'Nome do Funcionário'),
                   ),
                   TextFormField(
                     controller: _registroCpfController,
@@ -292,11 +302,31 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
                   ),
                   TextFormField(
                     controller: _registroDataNascimentoController,
-                    decoration: InputDecoration(labelText: 'Data de Nascimento'),
+                    decoration: InputDecoration(
+                      labelText: 'Data de Nascimento',
+                      suffixIcon: IconButton(
+                        onPressed: () => _selectData(
+                            context, _registroDataNascimentoController),
+                        icon: Icon(Icons.calendar_today),
+                      ),
+                    ),
+                    readOnly: true,
+                    onTap: () =>
+                        _selectData(context, _registroDataNascimentoController),
                   ),
                   TextFormField(
                     controller: _registroUltimasFeriasController,
-                    decoration: InputDecoration(labelText: 'Últimas Férias'),
+                    decoration: InputDecoration(
+                      labelText: 'Últimas Férias',
+                      suffixIcon: IconButton(
+                        onPressed: () => _selectData(
+                            context, _registroUltimasFeriasController),
+                        icon: Icon(Icons.calendar_today),
+                      ),
+                    ),
+                    readOnly: true,
+                    onTap: () =>
+                        _selectData(context, _registroUltimasFeriasController),
                   ),
                   TextFormField(
                     controller: _registroEmailController,
@@ -319,13 +349,12 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
                     }).toList(),
                     onChanged: (value) {
                       setState(() {
-                        _registroIdDepartamentoController.text = value.toString();
+                        _registroIdDepartamentoController.text =
+                            value.toString();
                       });
                     },
                     decoration: InputDecoration(labelText: 'Departamento'),
                   ),
-
-
                   TextFormField(
                     controller: _registroCargoController,
                     decoration: InputDecoration(labelText: 'Cargo'),
@@ -343,35 +372,45 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
             ),
             TextButton(
               onPressed: () async {
-                final novoNome = _registroNomeController.text;
-                final novoCpf = _registroCpfController.text;
-                final novoEndereco = _registroEnderecoController.text;
-                final novoSalario = double.parse(_registroSalarioController.text);
-                final novoTelefone = _registroTelefoneController.text;
-                final novoDataNascimento = _registroDataNascimentoController.text;
-                final novoUltimasFerias = _registroUltimasFeriasController.text;
-                final novoEmail = _registroEmailController.text;
-                final novoSenha = _registroSenhaController.text;
-                final novoIdDepartamento = _registroIdDepartamentoController.text;
-                final novoCargo = _registroCargoController.text;
+                if (_registroIdDepartamentoController.text == null ||
+                    _registroIdDepartamentoController.text == "") {
 
-                final funcionario = {
-                  'nome': novoNome,
-                  'cpf': novoCpf,
-                  'endereco': novoEndereco,
-                  'salario': novoSalario,
-                  'telefone': novoTelefone,
-                  'dataNascimento': novoDataNascimento,
-                  'ultimasFerias': novoUltimasFerias,
-                  'email': novoEmail,
-                  'senha': novoSenha,
-                  'idDepartamento': novoIdDepartamento,
-                  'cargo': novoCargo
-                };
+                  Utils.showToast("Departamento obrigatorio",2);
+                } else {
+                  final novoNome = _registroNomeController.text;
+                  final novoCpf = _registroCpfController.text;
+                  final novoEndereco = _registroEnderecoController.text;
+                  final novoSalario =
+                      double.parse(_registroSalarioController.text);
+                  final novoTelefone = _registroTelefoneController.text;
+                  final novoDataNascimento =
+                      _registroDataNascimentoController.text;
+                  final novoUltimasFerias =
+                      _registroUltimasFeriasController.text;
+                  final novoEmail = _registroEmailController.text;
+                  final novoSenha = _registroSenhaController.text;
+                  final novoIdDepartamento =
+                      _registroIdDepartamentoController.text;
+                  final novoCargo = _registroCargoController.text;
 
-                await registrarFuncionario(funcionario);
+                  final funcionario = {
+                    'nome': novoNome,
+                    'cpf': novoCpf,
+                    'endereco': novoEndereco,
+                    'salario': novoSalario,
+                    'telefone': novoTelefone,
+                    'dataNascimento': novoDataNascimento,
+                    'ultimasFerias': novoUltimasFerias,
+                    'email': novoEmail,
+                    'senha': novoSenha,
+                    'idDepartamento': novoIdDepartamento,
+                    'cargo': novoCargo
+                  };
 
-                Navigator.of(context).pop();
+                  await registrarFuncionario(funcionario);
+
+                  Navigator.of(context).pop();
+                }
               },
               child: Text('Salvar'),
             ),
@@ -394,7 +433,6 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
     _registroIdDepartamentoController.text = funcionario['idDepartamento'];
     _registroCargoController.text = funcionario['cargo'];
 
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -407,7 +445,8 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
                 children: [
                   TextFormField(
                     controller: _editarNomeController,
-                    decoration: InputDecoration(labelText: 'Nome do Funcionário'),
+                    decoration:
+                        InputDecoration(labelText: 'Nome do Funcionário'),
                   ),
                   TextFormField(
                     controller: _registroCpfController,
@@ -428,11 +467,31 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
                   ),
                   TextFormField(
                     controller: _registroDataNascimentoController,
-                    decoration: InputDecoration(labelText: 'Data de Nascimento'),
+                    decoration: InputDecoration(
+                      labelText: 'Data de Nascimento',
+                      suffixIcon: IconButton(
+                        onPressed: () => _selectData(
+                            context, _registroDataNascimentoController),
+                        icon: Icon(Icons.calendar_today),
+                      ),
+                    ),
+                    readOnly: true,
+                    onTap: () =>
+                        _selectData(context, _registroDataNascimentoController),
                   ),
                   TextFormField(
                     controller: _registroUltimasFeriasController,
-                    decoration: InputDecoration(labelText: 'Últimas Férias'),
+                    decoration: InputDecoration(
+                      labelText: 'Últimas Férias',
+                      suffixIcon: IconButton(
+                        onPressed: () => _selectData(
+                            context, _registroUltimasFeriasController),
+                        icon: Icon(Icons.calendar_today),
+                      ),
+                    ),
+                    readOnly: true,
+                    onTap: () =>
+                        _selectData(context, _registroUltimasFeriasController),
                   ),
                   TextFormField(
                     controller: _registroEmailController,
@@ -450,7 +509,8 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
                     }).toList(),
                     onChanged: (value) {
                       setState(() {
-                        _registroIdDepartamentoController.text = value.toString();
+                        _registroIdDepartamentoController.text =
+                            value.toString();
                       });
                     },
                     decoration: InputDecoration(labelText: 'Departamento'),
@@ -500,4 +560,17 @@ class _TabelaFuncionarioPageState extends State<TabelaFuncionarioPage> {
     );
   }
 
+  Future<void> _selectData(
+      BuildContext context, TextEditingController dataController) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime(1900),
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2100));
+    if (picked != null) {
+      setState(() {
+        dataController.text = DateFormat('dd/MM/yyyy').format(picked);
+      });
+    }
+  }
 }

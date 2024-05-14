@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:zendays/Configs/Utils.dart';
 import 'package:zendays/Configs/EHttpMethod.dart';
 
@@ -64,15 +65,18 @@ class _VisualizarFeriasPageState extends State<VisualizarFeriasPage> {
           break;
       }
 
-      if(dataInicio != null && dataFim != null){
-        url+= "&dataInicio=$dataInicio&dataFim=$dataFim";
+      if(dataInicio != null && dataInicio != "" && dataFim != null && dataFim != ""){
+
+        var dataInicioFormatada = dataInicio.replaceAll("/", "%2F");
+        var dataFimFormatada = dataFim.replaceAll("/", "%2F");
+        url+= "&dataInicio=$dataInicioFormatada&dataFim=$dataFimFormatada";
       }
 
-      if(departamento != null){
+      if(departamento != null && departamento != ""){
         url+= "&idDepartamento=$departamento";
       }
 
-      if(status != null || status != "3"){
+      if((status != null && status != "" ) || status != "3" && status != ""){
         url+= "&status=$status";
       }
       var response = await Utils.GetRetornoAPI(null, HttpMethod.GET, url, true);
@@ -142,20 +146,32 @@ class _VisualizarFeriasPageState extends State<VisualizarFeriasPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(
-                          child: TextField(
+                          child: TextFormField(
                             controller: _dataInicioController,
-                            decoration: const InputDecoration(
-                                labelText: 'Data inicio'
+                            decoration: InputDecoration(
+                              labelText: 'Data Inicio',
+                              suffixIcon: IconButton(
+                                onPressed: () => _selectData(context,_dataInicioController),
+                                icon: Icon(Icons.calendar_today),
+                              ),
                             ),
+                            readOnly: true,
+                            onTap: () => _selectData(context,_dataInicioController),
                           ),
                         ),
                         SizedBox(width: 16), // Espaço entre os campos
                         Expanded(
-                          child: TextField(
+                          child: TextFormField(
                             controller: _dataFimController,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               labelText: 'Data Fim',
+                              suffixIcon: IconButton(
+                                onPressed: () => _selectData(context,_dataInicioController),
+                                icon: Icon(Icons.calendar_today),
+                              ),
                             ),
+                            readOnly: true,
+                            onTap: () => _selectData(context,_dataFimController),
                           ),
                         ),
 
@@ -165,7 +181,7 @@ class _VisualizarFeriasPageState extends State<VisualizarFeriasPage> {
                 Padding(
                   padding: EdgeInsets.all(16.0),
                   child: DropdownButtonFormField(
-                    value: "3",
+                    value: _statusController.text == null || _statusController.text == ""?"3":_statusController.text,
                     items: <String>['0', '1', '2','3']
                         .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
@@ -209,7 +225,7 @@ class _VisualizarFeriasPageState extends State<VisualizarFeriasPage> {
                         ElevatedButton(
                           onPressed: () {
                             setState(() {
-                              fetchDataFiltro(_dataFimController.text, _dataFimController.text, _statusController.text, _departamentoController.text);
+                              fetchDataFiltro(_dataInicioController.text, _dataFimController.text, _statusController.text, _departamentoController.text);
                             });
 
                           },
@@ -237,6 +253,7 @@ class _VisualizarFeriasPageState extends State<VisualizarFeriasPage> {
                               Text('Data Fim: ${feriasAtual['dataFim']}'),
                               Text('Data Pedido: ${feriasAtual['dataPedido']}'),
                               Text('Vendido: ${feriasAtual['diasVendidos']} dias'),
+                              Text('Status: ${feriasAtual['status']}'),
                             ],
                           ),
                         ),
@@ -252,136 +269,6 @@ class _VisualizarFeriasPageState extends State<VisualizarFeriasPage> {
     );
   }
 
-
-  /*@override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Visualização de Férias', style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF275657),
-      ),
-      drawer: AdminMenu(
-        currentPage: 'visualizarFerias',
-        onMenuTap: (String page) {},
-      ),
-      body:
-      Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _dataInicioController,
-                    decoration: const InputDecoration(
-                      labelText: 'Data inicio'
-                    ),
-                  ),
-                ),
-                SizedBox(width: 16), // Espaço entre os campos
-                Expanded(
-                  child: TextField(
-                    controller: _dataFimController,
-                    decoration: const InputDecoration(
-                      labelText: 'Data Fim',
-                    ),
-                  ),
-                ),
-
-              ],
-            )
-          ),
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child: DropdownButtonFormField(
-              value: "3",
-              items: <String>['0', '1', '2','3']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(getDropdownText(value)),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _statusController.text = value.toString();
-                });
-              },
-              decoration: InputDecoration(labelText: 'Status Ferias'),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child: DropdownButtonFormField(
-              value: _departamentoController.text.isNotEmpty
-                  ? _departamentoController.text
-                  : null,
-              items: departamentosList.map((departamento) {
-                return DropdownMenuItem(
-                  value: departamento['id'],
-                  child: Text(departamento['nome']),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _departamentoController.text = value.toString();
-                });
-              },
-              decoration: InputDecoration(labelText: 'Departamento'),
-            ),
-          ),
-          Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        fetchDataFiltro(_dataFimController.text, _dataFimController.text, _statusController.text, _departamentoController.text);
-                      });
-
-                    },
-                    child: Text('Botão'),
-                  )
-
-                ],
-              )
-          ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: ferias.length,
-              separatorBuilder: (context, index) => Divider(height: 1.0),
-              itemBuilder: (context, index) {
-                final feriasAtual = ferias[index];
-                var dataInicio = feriasAtual['dataInicio'];
-                var dataFim = feriasAtual['dataFim'];
-                return Card(
-                  child: ListTile(
-                    title: Text("$dataInicio - $dataFim"),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Data Início: ${feriasAtual['dataInicio']}'),
-                        Text('Data Fim: ${feriasAtual['dataFim']}'),
-                        Text('Data Pedido: ${feriasAtual['dataPedido']}'),
-                        Text('Vendido: ${feriasAtual['diasVendidos']} dias'),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }*/
-
-
-
   String getDropdownText(String value) {
     switch (value) {
       case '0':
@@ -394,6 +281,20 @@ class _VisualizarFeriasPageState extends State<VisualizarFeriasPage> {
         return 'Todos';
       default:
         return '';
+    }
+  }
+
+  Future<void> _selectData(BuildContext context,TextEditingController dataController) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+        initialDate: DateTime(2024),
+        firstDate: DateTime(2024),
+        lastDate: DateTime(2100)
+    );
+    if (picked != null) {
+      setState(() {
+        dataController.text = DateFormat('dd/MM/yyyy').format(picked);
+      });
     }
   }
 

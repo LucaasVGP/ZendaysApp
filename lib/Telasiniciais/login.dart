@@ -22,13 +22,12 @@ class LoginPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-    /*SizedBox(height: 50),
+    SizedBox(height: 50),
                 Image.network(
-                'https://cdn.discordapp.com/attachments/1009260536992632953/1221586075387170877/ZENDAYS-removebg-preview.png?ex=66131db0&is=6600a8b0&hm=d7b82e1e1753c70a734e6efd90fb1181ab4e6da287d83c28a6119a1b1e6b5faf&',
+                'https://i.imgur.com/3ahDrtu.png',
                 height: 200,
               ),
 
-     */
               SizedBox(height: 30),
               TextFormField(
                 controller: _usernameController,
