@@ -25,6 +25,7 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
   void initState() {
     super.initState();
     fetchData();
+    _registroDataFimController.addListener(_verificarPeriodoMaximo);
   }
 
   Future<void> fetchData({String status = "3"}) async {
@@ -151,48 +152,83 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
                 var dataFim = Ferias['dataFim'];
                 var status = Ferias['status'];
                 return Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
-                          blurRadius: 4,
-                          offset: Offset(0, 3), // changes position of shadow
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
                         ),
                       ],
                     ),
                     child: Card(
+                      margin: EdgeInsets.all(8.0),
                       elevation: 0, // Removendo a sombra do card
-                      margin: EdgeInsets.zero,
-                      child: ListTile(
-                        leading: getStatusIcon(status),
-                        title: Row(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("$dataInicio-", style: TextStyle(fontSize: 16)), // Data de início
-                            Text(dataFim, style: TextStyle(fontSize: 16)), // Data de fim
-                          ],
-                        ),
-
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.edit),
-                              onPressed: () {
-                                setState(() {
-                                  feriasSelecionada = Ferias;
-                                });
-                                exibirModalEditar(Ferias);
-                              },
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Período: $dataInicio - $dataFim",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                getStatusIcon(status),
+                              ],
                             ),
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () {
-                                exibirModalExclusao(Ferias);
-                              },
+                            SizedBox(height: 8.0),
+                            Text(
+                              "Status: ${getDropdownText(status.toString())}",
+                              style: TextStyle(
+                                color: getStatusColor(status),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            SizedBox(height: 8.0),
+                            Text(
+                              "Dias Vendidos: ${Ferias['diasVendidos']}",
+                              style: TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+                            SizedBox(height: 8.0),
+                            Text(
+                              "Observação: ${Ferias['mensagem']}",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    setState(() {
+                                      feriasSelecionada = Ferias;
+                                    });
+                                    exibirModalEditar(Ferias);
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () {
+                                    exibirModalExclusao(Ferias);
+                                  },
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -224,11 +260,11 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
   Color getStatusColor(int status) {
     switch (status) {
       case 0:
-        return Colors.yellow;
+        return Colors.yellow[700]!;
       case 1:
-        return Colors.green;
+        return Colors.green[700]!;
       case 2:
-        return Colors.red;
+        return Colors.red[700]!;
       default:
         return Colors.transparent;
     }
@@ -277,6 +313,11 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
   }
 
   void exibirModalRegistro() {
+    _registroDataInicioController.clear();
+    _registroDataFimController.clear();
+    _registroDiasVendidosController.clear();
+    _registroMensagemController.clear();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -287,7 +328,6 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Campo de data de início
                   TextFormField(
                     controller: _registroDataInicioController,
                     decoration: InputDecoration(
@@ -300,7 +340,6 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
                     readOnly: true,
                     onTap: () => _selectDataInicio(context),
                   ),
-                  // Campo de data de fim
                   TextFormField(
                     controller: _registroDataFimController,
                     decoration: InputDecoration(
@@ -370,7 +409,6 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Campo de data de início
                   TextFormField(
                     controller: _registroDataInicioController,
                     decoration: InputDecoration(
@@ -383,7 +421,6 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
                     readOnly: true,
                     onTap: () => _selectDataInicio(context),
                   ),
-                  // Campo de data de fim
                   TextFormField(
                     controller: _registroDataFimController,
                     decoration: InputDecoration(
@@ -448,10 +485,10 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
     if (picked != null) {
       setState(() {
         _registroDataInicioController.text = _dateFormat.format(picked);
+        _verificarPeriodoMaximo();
       });
     }
   }
-
 
   Future<void> _selectDataFim(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -463,7 +500,21 @@ class _TelaFeriasPageState extends State<TelaFeriasPage> {
     if (picked != null) {
       setState(() {
         _registroDataFimController.text = _dateFormat.format(picked);
+        _verificarPeriodoMaximo();
       });
+    }
+  }
+
+  void _verificarPeriodoMaximo() {
+    if (_registroDataInicioController.text.isNotEmpty && _registroDataFimController.text.isNotEmpty) {
+      DateTime dataInicio = _dateFormat.parse(_registroDataInicioController.text);
+      DateTime dataFim = _dateFormat.parse(_registroDataFimController.text);
+      if (dataFim.difference(dataInicio).inDays > 30) {
+        setState(() {
+          _registroDataFimController.clear();
+        });
+        Utils.showToast("O período máximo de uma solicitação de férias é de 30 dias.");
+      }
     }
   }
 }

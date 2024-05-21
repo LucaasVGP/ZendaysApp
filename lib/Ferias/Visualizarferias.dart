@@ -166,7 +166,7 @@ class _VisualizarFeriasPageState extends State<VisualizarFeriasPage> {
                             decoration: InputDecoration(
                               labelText: 'Data Fim',
                               suffixIcon: IconButton(
-                                onPressed: () => _selectData(context,_dataInicioController),
+                                onPressed: () => _selectData(context,_dataFimController),
                                 icon: Icon(Icons.calendar_today),
                               ),
                             ),
